@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">NodesMobile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="submit">Submit</string>
+    <string name="email">Email</string>
 </resources>
