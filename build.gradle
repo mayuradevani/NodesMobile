@@ -3,6 +3,15 @@ buildscript {
     ext {
         navigationVersion = "2.4.0-alpha10"
         gradle_version = '7.0.3'
+
+        kotlin_version = "1.4.31"
+        apollo_version = "2.5.9"
+        hilt_version = "2.37"
+        hilt_compiler_version = '1.0.0-alpha03'
+        legacy_support_v4_version = '1.0.0'
+        fragment_component_version = "2.3.3"
+
+
     }
     repositories {
         google()
@@ -12,8 +21,9 @@ buildscript {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
         classpath("com.apollographql.apollo:apollo-gradle-plugin:2.5.9")
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5'
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.37'
+
     }
 }
 
