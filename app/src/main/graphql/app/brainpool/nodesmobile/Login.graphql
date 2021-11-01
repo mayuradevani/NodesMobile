@@ -1,0 +1,6 @@
+mutation Login($email:String!){
+    loginUserDataByEmail(email:$email){
+        success
+        message
+    }
+}

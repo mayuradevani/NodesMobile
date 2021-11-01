@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation.xml"
+    app:startDestination="@id/loginEmailFragment">
+
+    <fragment
+        android:id="@+id/loginEmailFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.Login.LoginEmailFragment"
+        android:label="LoginEmailFragment"
+        tools:layout="@layout/fragment_login_email" />
+    <fragment
+        android:id="@+id/languageListFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.Language.LanguageListFragment"
+        android:label="fragment_language_list"
+        tools:layout="@layout/fragment_language_list" />
+</navigation>
