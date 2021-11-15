@@ -3,16 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation.xml"
-    app:startDestination="@id/loginEmailFragment">
+    app:startDestination="@id/mapFragment">
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.map.MapFragment"
+        android:label="MapFragment"
+        tools:layout="@layout/map_fragment" />
+    <fragment
+        android:id="@+id/tasksFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.tasks.TasksFragment"
+        android:label="Hilt_TasksFragment"
+        tools:layout="@layout/tasks_fragment" />
+    <fragment
+        android:id="@+id/siteNotesFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.siteNotes.SiteNotesFragment"
+        android:label="SiteNotesFragment"
+        tools:layout="@layout/site_notes_fragment" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.notifications.NotificationsFragment"
+        android:label="NotificationsFragment"
+        tools:layout="@layout/notifications_fragment" />
 
-    <fragment
-        android:id="@+id/loginEmailFragment"
-        android:name="app.brainpool.nodesmobile.view.ui.Login.LoginEmailFragment"
-        android:label="LoginEmailFragment"
-        tools:layout="@layout/fragment_login_email" />
-    <fragment
-        android:id="@+id/languageListFragment"
-        android:name="app.brainpool.nodesmobile.view.ui.Language.LanguageListFragment"
-        android:label="fragment_language_list"
-        tools:layout="@layout/fragment_language_list" />
 </navigation>

@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_home"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_map"
         android:title="@string/map" />
     <item
         android:id="@+id/menu_site_notes"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_notes"
         android:title="@string/site_notes" />
     <item
         android:id="@+id/menu_tasks"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_task"
         android:title="@string/tasks" />
     <item
         android:id="@+id/menu_notifications"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_notifications"
         android:title="@string/notifications" />
 </menu>

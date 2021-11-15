@@ -1,29 +1,30 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        navigationVersion = "2.4.0-alpha10"
+        navigationVersion = "2.4.0-beta02"
         gradle_version = '7.0.3'
-
         kotlin_version = "1.4.31"
         apollo_version = "2.5.9"
         hilt_version = "2.37"
         hilt_compiler_version = '1.0.0-alpha03'
         legacy_support_v4_version = '1.0.0'
         fragment_component_version = "2.3.3"
-
-
+        def koin = "2.0.1"
     }
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://maven.google.com' }
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
         classpath("com.apollographql.apollo:apollo-gradle-plugin:2.5.9")
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5'
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.37'
-
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.0'
+        classpath 'com.google.gms:google-services:4.3.10'
     }
 }
 

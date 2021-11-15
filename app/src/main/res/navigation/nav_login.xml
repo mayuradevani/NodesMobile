@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_login.xml"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/login_fragment">
+        <action
+            android:id="@+id/action_loginFragment_to_holdingFragment"
+            app:destination="@id/holdingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/holdingFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.login.holding.HoldingFragment"
+        android:label="HoldingFragment"
+        tools:layout="@layout/holding_fragment">
+        <deepLink app:uri=".*/deep-link" />
+    </fragment>
+</navigation>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ui.Language.LanguageListFragment">
+    tools:context=".view.ui.language.LanguageListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/language_rv"
@@ -37,9 +37,11 @@
         android:layout_height="wrap_content"
         android:text="No languages found"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fetch_progress"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.15"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

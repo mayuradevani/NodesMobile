@@ -1,4 +1,4 @@
-package app.brainpool.nodesmobile.view.ui.Language
+package app.brainpool.nodesmobile.view.ui.language
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import app.brainpool.nodesmobile.databinding.FragmentLanguageListBinding
+import app.brainpool.nodesmobile.databinding.LanguageListFragmentBinding
 import app.brainpool.nodesmobile.util.gone
 import app.brainpool.nodesmobile.util.visible
 import app.brainpool.nodesmobile.view.adapter.LanguageAdapter
@@ -17,7 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class LanguageListFragment : Fragment() {
-    lateinit var binding: FragmentLanguageListBinding
+    lateinit var binding: LanguageListFragmentBinding
     private val languageAdapter by lazy { LanguageAdapter() }
     private val viewModel by viewModels<LanguageViewModel>()
 
@@ -26,7 +26,7 @@ class LanguageListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLanguageListBinding.inflate(inflater)
+        binding = LanguageListFragmentBinding.inflate(inflater)
         return binding.root
     }
 

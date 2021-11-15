@@ -1,6 +1,9 @@
 mutation Login($email:String!){
-    loginUserDataByEmail(email:$email){
+    loginUserDataByEmail(email:$email) {
         success
-        message
+        detail {
+            message
+            type
+        }
     }
 }
