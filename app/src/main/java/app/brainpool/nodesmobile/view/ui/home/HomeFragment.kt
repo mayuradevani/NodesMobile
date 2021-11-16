@@ -6,16 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.HomeFragmentBinding
+import app.brainpool.nodesmobile.model.HomeListItem
+import app.brainpool.nodesmobile.view.ui.home.adapter.HomeListAdapter
+import com.chad.library.adapter.base.listener.OnItemClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import dubai.business.womencouncil.data.dataSource.DataServer
-
+//http://34.126.80.190/api/v1/authenticate?token=RANDOMID
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.home_fragment) {
@@ -35,12 +38,17 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 startActivity(intent)
                 activity?.finish()
             }
-            val mainAdapter = HomeGridAdapter(context!!, DataServer.getHomeData())
-            binding.gridView.numColumns = 2
-            binding.gridView.adapter = mainAdapter
-            binding.gridView.onItemClickListener =
-                AdapterView.OnItemClickListener { _, _, position, _ ->
+            binding.recyclerView.apply {
+                hasFixedSize()
+                layoutManager = GridLayoutManager(context, 2)
+                adapter = HomeListAdapter(DataServer.getHomeData()).also { adapter ->
+                    adapter.setOnItemClickListener(listener = OnItemClickListener { adapter, view, position ->
+                        val homeListItem = adapter?.getItem(position) as HomeListItem
+                        itemClickListener(homeListItem)
+                    })
                 }
+            }
+
 //            Dexter.withContext(context)
 //                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 //                .withListener(object : PermissionListener {
@@ -87,4 +95,9 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
     }
 
+    private fun itemClickListener(homeListItem: HomeListItem) {
+        when (homeListItem.title) {
+//            "MAP" -> navController.navigate(R.id.map)
+        }
+    }
 }

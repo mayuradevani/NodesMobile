@@ -40,18 +40,7 @@ class MainActivity : AppCompatActivity() {
             binding = MainBinding.inflate(layoutInflater)
             val view = binding.root
             setContentView(view)
-            val crashButton = Button(this)
-            crashButton.text = "Test Crash"
-            crashButton.setOnClickListener {
-                throw RuntimeException("Test Crash") // Force a crash
-            }
 
-            addContentView(
-                crashButton, ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            )
             if (savedInstanceState == null) {
                 binding.bottomNavigation.setOnItemSelectedListener {
                     when (it.itemId) {

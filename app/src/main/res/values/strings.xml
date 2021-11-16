@@ -3,7 +3,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="submit">Submit</string>
     <string name="email">Email</string>
-    <string name="map">Map</string>
     <string name="site_notes">Site Notes</string>
     <string name="nodes">NODES</string>
     <string name="mobile">mobile</string>
@@ -39,6 +38,8 @@
     <string name="help">Help</string>
     <string name="default_map">Default Map</string>
     <string name="night_mode">Night Mode</string>
+    <string name="map">Map</string>
+    <string name="thermal">Thermal</string>
 
     <string-array name="location">
         <item>Cypress Lakes, Hunter Valley, NSW</item>

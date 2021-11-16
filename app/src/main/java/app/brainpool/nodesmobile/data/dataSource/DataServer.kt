@@ -5,7 +5,7 @@ import app.brainpool.nodesmobile.model.HomeListItem
 
 open class DataServer private constructor() {
     companion object {
-        fun getHomeData(): List<HomeListItem> {
+        fun getHomeData(): MutableList<HomeListItem> {
             val list = ArrayList<HomeListItem>()
             list.add(HomeListItem("Temprature", R.drawable.ic_map, false))
             list.add(HomeListItem("Wind", R.drawable.ic_settings, false))
