@@ -14,8 +14,6 @@ import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.LoginBinding
 import app.brainpool.nodesmobile.view.ui.home.HomeActivity
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.ktx.Firebase
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,12 +44,14 @@ class LoginActivity : AppCompatActivity() {
                         var deepLink: Uri? = null
                         if (link != null) {
                             deepLink = link.link
-                            val token = deepLink?.getQueryParameter("token")
-                            Prefs.putString(PrefsKey.AUTH_KEY, token)
-                            Log.v(TAG, "Key: " + Prefs.getString(PrefsKey.AUTH_KEY, "not rec"))
-                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                            startActivity(intent)
-                            this@LoginActivity.finish()
+                            val token: String = deepLink?.getQueryParameter("token").toString()
+                            if (!token.isNullOrEmpty()) {
+                                Prefs.putString(PrefsKey.AUTH_KEY, token)
+                                Log.v(TAG, "Key: " + Prefs.getString(PrefsKey.AUTH_KEY, "not rec"))
+                                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                                startActivity(intent)
+                                this@LoginActivity.finish()
+                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
