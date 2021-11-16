@@ -96,16 +96,16 @@
             android:id="@+id/tvLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/button_border_grey"
             android:paddingStart="8dp"
             android:paddingTop="5dp"
             android:paddingEnd="8dp"
             android:paddingBottom="5dp"
             android:text="@string/logout"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/ivProperty"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/guideline1" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivProperty"

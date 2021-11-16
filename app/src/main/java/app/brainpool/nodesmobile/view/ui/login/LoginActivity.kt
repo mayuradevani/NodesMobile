@@ -1,6 +1,6 @@
 package app.brainpool.nodesmobile.view.ui.login
 
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -26,6 +26,31 @@ class LoginActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
     lateinit var viewModel: LoginViewModel
+    override fun onStart() {
+        super.onStart()
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { link ->
+                navController.handleDeepLink(Intent().apply {
+                    try {
+                        var deepLink: Uri? = link.link
+                        val token: String = deepLink?.getQueryParameter("token").toString()
+                        if (!token.isNullOrEmpty()) {
+                            Prefs.putString(PrefsKey.AUTH_KEY, token)
+                            Log.v(
+                                ContentValues.TAG,
+                                "Key: " + Prefs.getString(PrefsKey.AUTH_KEY, "not rec")
+                            )
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            this@LoginActivity.finish()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                })
+            }
+    }
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,29 +60,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(view)
         navController = findNavController(R.id.navLogin)
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-
-        FirebaseDynamicLinks.getInstance()
-            .getDynamicLink(intent)
-            .addOnSuccessListener(this) { link ->
-                navController.handleDeepLink(Intent().apply {
-                    try {
-                        var deepLink: Uri? = null
-                        if (link != null) {
-                            deepLink = link.link
-                            val token: String = deepLink?.getQueryParameter("token").toString()
-                            if (!token.isNullOrEmpty()) {
-                                Prefs.putString(PrefsKey.AUTH_KEY, token)
-                                Log.v(TAG, "Key: " + Prefs.getString(PrefsKey.AUTH_KEY, "not rec"))
-                                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                                startActivity(intent)
-                                this@LoginActivity.finish()
-                            }
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                })
-            }
     }
 
     override fun onSupportNavigateUp(): Boolean {
