@@ -3,8 +3,6 @@ package app.brainpool.nodesmobile.util
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import app.brainpool.nodesmobile.R
@@ -23,29 +21,6 @@ fun View.inVisible() {
 
 fun View.gone() {
     visibility = View.GONE
-}
-
-fun FragmentManager.switch(containerId: Int, newFrag: Fragment, tag: String) {
-
-    var current = findFragmentByTag(tag)
-    beginTransaction()
-        .apply {
-
-            //Hide the current fragment
-            primaryNavigationFragment?.let { hide(it) }
-
-            //Check if current fragment exists in fragmentManager
-            if (current == null) {
-                current = newFrag
-                add(containerId, current!!, tag)
-            } else {
-                show(current!!)
-            }
-        }
-        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        .setPrimaryNavigationFragment(current)
-        .setReorderingAllowed(true)
-        .commitNowAllowingStateLoss()
 }
 
 fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) =

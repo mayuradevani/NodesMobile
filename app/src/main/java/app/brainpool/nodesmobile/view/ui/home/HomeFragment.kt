@@ -1,6 +1,5 @@
 package app.brainpool.nodesmobile.view.ui.home
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,13 +17,6 @@ import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.HomeFragmentBinding
 import app.brainpool.nodesmobile.model.HomeListItem
 import app.brainpool.nodesmobile.view.ui.home.adapter.HomeListAdapter
-import com.chad.library.adapter.base.listener.OnItemClickListener
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
 import dubai.business.womencouncil.data.dataSource.DataServer
@@ -57,29 +49,18 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 hasFixedSize()
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = HomeListAdapter(DataServer.getHomeData()).also { adapter ->
-                    adapter.setOnItemClickListener(listener = OnItemClickListener { adapter, view, position ->
+                    adapter.setOnItemClickListener { adapter, view, position ->
                         val homeListItem = adapter?.getItem(position) as HomeListItem
                         itemClickListener(homeListItem)
-                    })
+                    }
                 }
+//                adapter = HomeListAdapter(DataServer.getHomeData()).also { adapter ->
+//                    adapter.setOnItemClickListener(listener = OnItemClickListener { adapter, view, position ->
+//                        val homeListItem = adapter?.getItem(position) as HomeListItem
+//                        itemClickListener(homeListItem)
+//                    })
+//                }
             }
-
-            Dexter.withContext(context)
-                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener(object : PermissionListener {
-                    override fun onPermissionGranted(response: PermissionGrantedResponse) { /* ... */
-                    }
-
-                    override fun onPermissionDenied(response: PermissionDeniedResponse) { /* ... */
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        permission: PermissionRequest?,
-                        token: PermissionToken?
-                    ) { /* ... */
-                    }
-                }).check()
-
 
             val location = resources.getStringArray(R.array.location)
             val adapter = ArrayAdapter(

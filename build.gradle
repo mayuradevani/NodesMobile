@@ -19,7 +19,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0'
         classpath("com.apollographql.apollo:apollo-gradle-plugin:2.5.9")
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5'
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.37'

@@ -41,6 +41,10 @@
     <string name="map">Map</string>
     <string name="thermal">Thermal</string>
     <string name="logout">Logout</string>
+    <string name="_34_41_28_68">34°41\'28.68\" N</string>
+    <string name="_135_10">135°10\'58.80\" E</string>
+    <string name="_2021_07_12">2021.07.12</string>
+    <string name="utc_09_12_24">UTC 09:12:24</string>
 
     <string-array name="location">
         <item>Cypress Lakes, Hunter Valley, NSW</item>

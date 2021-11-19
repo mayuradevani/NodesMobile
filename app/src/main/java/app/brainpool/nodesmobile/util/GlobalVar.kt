@@ -1,5 +1,6 @@
 package app.brainpool.nodesmobile.util
 
-class GlobalVar {
+object GlobalVar {
     val TAG = "NODES"
+    val REQUEST_CHECK_SETTINGS = 2
 }

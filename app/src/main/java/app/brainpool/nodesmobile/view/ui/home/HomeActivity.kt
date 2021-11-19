@@ -20,7 +20,6 @@ class HomeActivity : AppCompatActivity() {
     @ExperimentalCoroutinesApi
     lateinit var viewModel: HomeViewModel
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HomeBinding.inflate(layoutInflater)

@@ -1,38 +1,69 @@
 package app.brainpool.nodesmobile
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.ui.NavigationUI
+import androidx.fragment.app.FragmentManager
 import app.brainpool.nodesmobile.databinding.MainBinding
-import app.brainpool.nodesmobile.util.switch
-import dagger.hilt.android.AndroidEntryPoint
-
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import app.brainpool.nodesmobile.view.ui.notifications.NotificationsFragment
-
-import app.brainpool.nodesmobile.view.ui.home.HomeFragment
+import app.brainpool.nodesmobile.util.GlobalVar
 import app.brainpool.nodesmobile.view.ui.map.MapFragment
+import app.brainpool.nodesmobile.view.ui.notifications.NotificationsFragment
 import app.brainpool.nodesmobile.view.ui.siteNotes.SiteNotesFragment
 import app.brainpool.nodesmobile.view.ui.tasks.TasksFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: MainBinding
-    lateinit var navController: NavController
-    val fragment1: Fragment = MapFragment()
+    val fragment1: MapFragment = MapFragment()
     val fragment2: Fragment = SiteNotesFragment()
     val fragment3: Fragment = TasksFragment()
     val fragment4: Fragment = NotificationsFragment()
+    val fm: FragmentManager = supportFragmentManager
+    var active: Fragment = fragment1
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions!!, grantResults!!)
+        for (fragment in supportFragmentManager.fragments) {
+            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    @Override
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            GlobalVar.REQUEST_CHECK_SETTINGS ->
+                when (resultCode) {
+                    RESULT_OK -> {
+                        fragment1.locationUpdateState = true
+                        fragment1.startLocationUpdates()
+                    }
+                    RESULT_CANCELED -> {
+                        finish()
+                    }
+                    else -> {}
+                }
+        }
+    }
+
+    fun setFragment(fragment: Fragment, tag: String?, position: Int) {
+        if (fragment.isAdded) {
+            fm.beginTransaction().hide(active).show(fragment).commit()
+        } else {
+            fm.beginTransaction().add(R.id.nav_host_fragment, fragment, tag).commit()
+        }
+        binding.bottomNavigation.getMenu().getItem(position).setChecked(true)
+        active = fragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,35 +71,31 @@ class MainActivity : AppCompatActivity() {
             binding = MainBinding.inflate(layoutInflater)
             val view = binding.root
             setContentView(view)
-
             if (savedInstanceState == null) {
                 binding.bottomNavigation.setOnItemSelectedListener {
                     when (it.itemId) {
                         R.id.menu_home -> {
-                            supportFragmentManager.switch(R.id.nav_host_fragment, fragment1, "Home")
+                            setFragment(fragment1, "Home", 0)
                             return@setOnItemSelectedListener true
                         }
                         R.id.menu_site_notes -> {
-                            supportFragmentManager.switch(
-                                R.id.nav_host_fragment,
+                            setFragment(
                                 fragment2,
-                                "SiteNotes"
+                                "SiteNotes", 1
                             )
                             return@setOnItemSelectedListener true
                         }
                         R.id.menu_tasks -> {
-                            supportFragmentManager.switch(
-                                R.id.nav_host_fragment,
+                            setFragment(
                                 fragment3,
-                                "Tasks"
+                                "Tasks", 2
                             )
                             return@setOnItemSelectedListener true
                         }
                         R.id.menu_notifications -> {
-                            supportFragmentManager.switch(
-                                R.id.nav_host_fragment,
+                            setFragment(
                                 fragment4,
-                                "Notifications"
+                                "Notifications", 3
                             )
                             return@setOnItemSelectedListener true
                         }
@@ -76,13 +103,9 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-
-//    override fun onSupportNavigateUp(): Boolean {
-//        navController.navigateUp()
-//        return super.onSupportNavigateUp()
-//    }
 }

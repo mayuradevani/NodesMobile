@@ -16,6 +16,7 @@
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/font/calibri.xml" value="0.28" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_base.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_holding.xml" value="0.264" />
+        <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_location.xml" value="0.26614583333333336" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_splash.xml" value="0.25416666666666665" />
@@ -23,6 +24,7 @@
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/fragment_language_list.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/fragment_login.xml" value="0.13020833333333334" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/fragment_login_email.xml" value="0.25416666666666665" />
+        <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/fragment_maps.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/holding_fragment.xml" value="0.25" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/home.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/home_fragment.xml" value="0.25416666666666665" />
