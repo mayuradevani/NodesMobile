@@ -8,12 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import app.brainpool.nodesmobile.R
-import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.LoginFragmentBinding
 import app.brainpool.nodesmobile.util.gone
 import app.brainpool.nodesmobile.util.materialDialog
-import app.brainpool.nodesmobile.view.state.ViewState
-import com.pixplicity.easyprefs.library.Prefs
+import app.brainpool.nodesmobile.util.observeViewState
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,27 +47,16 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
     }
 
     private fun observeLiveData() {
-        viewModel.login.observe(this) {
-            when (it) {
-                is ViewState.Loading -> {
-                    binding.fetchProgress.visibility = View.VISIBLE
-                }
-                is ViewState.Success -> {
-                    if (it.value?.data == null) {
-                        materialDialog(it.value?.errors?.get(0)?.message.toString(),"","OK"                        ){
-                            it.dismiss()
-                        }
-                    } else {
-                        findNavController().navigate(R.id.holdingFragment)
-                    }
-                    binding.fetchProgress.gone()
-                }
-                is ViewState.Error -> {
-                    materialDialog(it?.message.toString(), "", "OK") {
+        observeViewState(viewModel.login, binding.fetchProgress) { response ->
+            if (response != null) {
+                if (response?.data == null) {
+                    materialDialog(response.errors?.get(0)?.message.toString(),"","OK"                        ){
                         it.dismiss()
                     }
-                    binding.fetchProgress.gone()
+                } else {
+                    findNavController().navigate(R.id.holdingFragment)
                 }
+                binding.fetchProgress.gone()
             }
         }
     }

@@ -1,15 +1,14 @@
 package app.brainpool.nodesmobile.view.ui.login
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.brainpool.nodesmobile.LoginMutation
 import app.brainpool.nodesmobile.Repository.NodesMobRepository
+import app.brainpool.nodesmobile.util.doInBackground
 import app.brainpool.nodesmobile.view.state.ViewState
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.exception.ApolloException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -28,13 +27,8 @@ class LoginViewModel @Inject constructor(
         get() = _login
 
     fun login(email: String) = viewModelScope.launch {
-        _login.postValue(ViewState.Loading())
-        try {
-            val response = repository.queryLoginWithEmail(email)
-            _login.postValue(ViewState.Success(response))
-        } catch (e: ApolloException) {
-            Log.d("ApolloException", "Failure", e)
-            _login.postValue(ViewState.Error(" " + e.message))
+        doInBackground(_login, "Unable to login") {
+            repository.queryLoginWithEmail(email)
         }
     }
 }

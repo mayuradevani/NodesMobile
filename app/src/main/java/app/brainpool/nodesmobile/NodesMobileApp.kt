@@ -2,7 +2,6 @@ package app.brainpool.nodesmobile
 
 import android.app.Application
 import android.content.ContextWrapper
-import com.google.firebase.FirebaseApp
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.HiltAndroidApp
 
@@ -16,5 +15,6 @@ class NodesMobileApp : Application() {
             .setPrefsName(packageName)
             .setUseDefaultSharedPreference(true)
             .build()
+
     }
 }

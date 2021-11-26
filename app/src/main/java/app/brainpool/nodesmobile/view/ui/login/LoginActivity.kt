@@ -36,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
                         var deepLink: Uri? = link.link
                         val token: String = deepLink?.getQueryParameter("token").toString()
                         if (!token.isNullOrEmpty()) {
+                            navController.navigate(R.id.holdingFragment)
                             Prefs.putString(PrefsKey.AUTH_KEY, token)
                             Log.v(
                                 ContentValues.TAG,

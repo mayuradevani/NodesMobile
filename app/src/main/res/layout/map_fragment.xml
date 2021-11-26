@@ -6,12 +6,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         tools:context=".view.ui.login.LoginEmailFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clHeader"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="70dp"
             android:gravity="center"
             android:padding="20dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +22,7 @@
                 android:id="@+id/tvMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_margin="10dp"
                 android:text="@string/map"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +33,7 @@
                 android:id="@+id/tvThermal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_margin="10dp"
                 android:text="@string/thermal"
                 android:textColor="@color/orange"
                 android:textSize="18sp"
@@ -79,7 +80,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ivProperty"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="70dp"
             android:src="@color/tr_grey_bg"
             app:layout_constraintBottom_toBottomOf="parent">
 

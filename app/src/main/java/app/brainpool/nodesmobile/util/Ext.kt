@@ -1,15 +1,18 @@
 package app.brainpool.nodesmobile.util
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.*
 import app.brainpool.nodesmobile.R
+import app.brainpool.nodesmobile.view.state.ViewState
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.apollographql.apollo.exception.ApolloException
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -25,6 +28,45 @@ fun View.gone() {
 
 fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) =
     liveData.observe(this, androidx.lifecycle.Observer(body))
+
+fun <T : Any, L : LiveData<ViewState<T>>> LifecycleOwner.observeViewState(
+    liveData: L,
+    loader: View? = null,
+    body: (T?) -> Unit
+) {
+    this.observe(liveData) {
+        when (it) {
+            is ViewState.Loading -> {
+                loader?.gone()
+            }
+            is ViewState.Error -> {
+                loader?.gone()
+            }
+            is ViewState.Success -> {
+                body.invoke(it.value)
+                loader?.gone()
+            }
+        }
+    }
+}
+
+
+fun <T> ViewModel.doInBackground(
+    liveData: MutableLiveData<ViewState<T>>,
+    customError: String? = null,
+    request: suspend () -> T
+) {
+    viewModelScope.launch {
+        liveData.postValue(ViewState.Loading())
+        try {
+            val response = request.invoke()
+            liveData.postValue(ViewState.Success(response))
+        } catch (e: ApolloException) {
+            Log.d("ApolloException", "Failure", e)
+            liveData.postValue(ViewState.Error(e.message))
+        }
+    }
+}
 
 fun ImageView.loadImage(filePath: String, placeHolder: Int? = null) {
 
@@ -94,6 +136,7 @@ fun Fragment.materialDialog(
     }
     return null
 }
+
 //android:fontFamily="sans-serif" // roboto regular
 //android:fontFamily="sans-serif-light" // roboto light
 //android:fontFamily="sans-serif-condensed" // roboto condensed

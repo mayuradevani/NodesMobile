@@ -9,18 +9,22 @@
         android:background="@color/grey_bg"
         tools:context=".view.ui.home.HomeActivity">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/tvNodes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/grey_dark"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="@string/nodes"
-            android:textColor="@color/grey_text"
-            android:textSize="38sp"
-            app:fontFamily="sans-serif-light"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="150dp"
+                android:layout_height="70dp"
+                android:src="@drawable/nodes"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/navLogin"
@@ -32,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNodes" />
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rvFooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,11 +44,15 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
-        </RelativeLayout>
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/logo_small" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

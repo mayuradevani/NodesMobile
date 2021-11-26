@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import app.brainpool.nodesmobile.data.PrefsKey
+import app.brainpool.nodesmobile.view.ui.home.HomeActivity
 import app.brainpool.nodesmobile.view.ui.login.LoginActivity
 import com.pixplicity.easyprefs.library.Prefs
 
@@ -18,7 +19,7 @@ class Splash : AppCompatActivity() {
             if (Prefs.getString(PrefsKey.AUTH_KEY, "").isNullOrEmpty()) {
                 intent = Intent(this, LoginActivity::class.java)
             } else {
-                intent = Intent(this, MainActivity::class.java)
+                intent = Intent(this, HomeActivity::class.java)
             }
             startActivity(intent)
             finish()

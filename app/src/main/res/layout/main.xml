@@ -17,22 +17,18 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/llContainer"
+                android:id="@+id/tvNodes"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:background="@color/grey_dark"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvNodes"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/grey_dark"
-                    android:gravity="center"
-                    android:text="@string/nodes"
-                    android:textColor="@color/grey_text"
-                    android:textSize="30sp"
-                    app:fontFamily="sans-serif-light"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="150dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/nodes"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,14 +36,15 @@
                     android:id="@+id/ivSetting"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="22dp"
+                    android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="@+id/tvNodes"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvNodes"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_settings" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -56,31 +53,32 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@color/white"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@+id/ivFooter"
+            app:layout_constraintBottom_toTopOf="@+id/rvFooter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:navGraph="@navigation/nav_main" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivFooter"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rvFooter"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/place_holder"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_dark"
             app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_launcher_foreground"
-            app:layout_constraintBottom_toBottomOf="@id/ivFooter"
-            app:layout_constraintEnd_toEndOf="@id/ivFooter"
-            app:layout_constraintTop_toTopOf="@id/ivFooter" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/logo_small" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"

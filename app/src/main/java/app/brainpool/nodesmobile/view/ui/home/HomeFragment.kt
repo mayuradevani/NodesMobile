@@ -1,12 +1,18 @@
 package app.brainpool.nodesmobile.view.ui.home
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,14 +38,29 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         savedInstanceState: Bundle?
     ): View? {
         try {
+            createChannel(
+                getString(R.string.app_notification_channel_id),
+                getString(R.string.app_notification_channel_name)
+            )
             binding = HomeFragmentBinding.inflate(inflater)
             viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+            binding.tvThemeChange.setOnClickListener {
+                val isNightTheme =
+                    resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                when (isNightTheme) {
+                    Configuration.UI_MODE_NIGHT_YES ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    Configuration.UI_MODE_NIGHT_NO ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+            }
             binding.tvLogout.setOnClickListener {
                 Prefs.putString(PrefsKey.AUTH_KEY, "")
                 val intent = Intent(activity, Splash::class.java)
                 startActivity(intent)
                 activity?.finish()
             }
+
             binding.ivMap.setOnClickListener {
                 val intent = Intent(activity, MainActivity::class.java)
                 startActivity(intent)
@@ -48,24 +69,13 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
             binding.recyclerView.apply {
                 hasFixedSize()
                 layoutManager = GridLayoutManager(context, 2)
-                adapter = HomeListAdapter(DataServer.getHomeData()).also { adapter ->
-                    adapter.setOnItemClickListener { adapter, view, position ->
-                        val homeListItem = adapter?.getItem(position) as HomeListItem
-                        itemClickListener(homeListItem)
-                    }
-                }
-//                adapter = HomeListAdapter(DataServer.getHomeData()).also { adapter ->
-//                    adapter.setOnItemClickListener(listener = OnItemClickListener { adapter, view, position ->
-//                        val homeListItem = adapter?.getItem(position) as HomeListItem
-//                        itemClickListener(homeListItem)
-//                    })
-//                }
+                adapter = HomeListAdapter(DataServer.getHomeData())
             }
 
-            val location = resources.getStringArray(R.array.location)
+            val locationArray = resources.getStringArray(R.array.location)
             val adapter = ArrayAdapter(
                 context!!,
-                R.layout.item_spinner, location
+                R.layout.item_spinner, locationArray
             )
             binding.spinner.adapter = adapter
             binding.spinner.onItemSelectedListener = object :
@@ -86,14 +96,51 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         return container
     }
 
+    private fun createChannel(channelId: String, channelName: String) {
+        try {// TODO: Step 1.6 START create a channel
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // Create channel to show notifications.
+                val notificationChannel = NotificationChannel(
+                    channelId,
+                    channelName,
+                    // TODO: Step 2.4 change importance
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+                    // TODO: Step 2.6 disable badges for this channel
+                    .apply {
+                        setShowBadge(false)
+                    }
+
+                notificationChannel.enableLights(true)
+                notificationChannel.lightColor = Color.RED
+                notificationChannel.enableVibration(true)
+                notificationChannel.description = getString(R.string.app_notification_channel_id)
+
+                val notificationManager = requireActivity().getSystemService(
+                    NotificationManager::class.java
+                )
+
+                notificationManager.createNotificationChannel(notificationChannel)
+
+            }
+            // TODO: Step 1.6 END create channel
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
     }
 
     private fun itemClickListener(homeListItem: HomeListItem) {
-        when (homeListItem.title) {
-//            "MAP" -> navController.navigate(R.id.map)
+        try {
+            when (homeListItem.title) {
+                //            "MAP" -> navController.navigate(R.id.map)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
