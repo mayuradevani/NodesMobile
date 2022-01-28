@@ -3,12 +3,14 @@ package app.brainpool.nodesmobile.util
 import android.app.NotificationManager
 import android.util.Log
 import androidx.core.content.ContextCompat
+import app.brainpool.nodesmobile.MainActivity
+import app.brainpool.nodesmobile.data.PrefsKey
 import com.example.android.eggtimernotifications.util.sendNotification
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.pixplicity.easyprefs.library.Prefs
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
     /**
      * Called when message is received.
      *
@@ -29,10 +31,23 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         remoteMessage?.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
-            sendNotification(it.body!!)
+            sendNotification(it.title!!, it.body!!, remoteMessage.data.get("filename"))
         }
     }
     // [END receive_message]
+
+    /**
+     * Create and show a simple notification containing the received FCM message.
+     *
+     * @param messageBody FCM message body received.
+     */
+    private fun sendNotification(title: String, messageBody: String, fileName: String?) {
+        val notificationManager = ContextCompat.getSystemService(
+            applicationContext,
+            NotificationManager::class.java
+        ) as NotificationManager
+        notificationManager.sendNotification(title, messageBody, fileName, applicationContext)
+    }
 
     //TODO Step 3.2 log registration token
     // [START on_new_token]
@@ -43,7 +58,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-
+        Prefs.putString(PrefsKey.FIREBASE_TOKEN, token)
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
@@ -51,24 +66,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
     // [END on_new_token]
 
-
-    /**
-     * Persist token to third-party servers.
-     *
-     * @param token The new token.
-     */
     private fun sendRegistrationToServer(token: String?) {
-        // TODO: Implement this method to send token to your app server.
-    }
-
-    /**
-     * Create and show a simple notification containing the received FCM message.
-     *
-     * @param messageBody FCM message body received.
-     */
-    private fun sendNotification(messageBody: String) {
-        val notificationManager = ContextCompat.getSystemService(applicationContext, NotificationManager::class.java) as NotificationManager
-        notificationManager.sendNotification(messageBody, applicationContext)
+        Log.v(TAG, "Token:" + token)
+        if (token != null) {
+            if (Prefs.getString(PrefsKey.USER_ID, "").isNotEmpty())
+                MainActivity.sendTokenToServer(this, token)
+        }
     }
 
     companion object {

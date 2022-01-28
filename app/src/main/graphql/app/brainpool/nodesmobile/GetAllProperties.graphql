@@ -1,0 +1,25 @@
+query GetAllProperties($isArchive:Boolean){
+    getAllProperties(isArchive:$isArchive){
+        id
+        name
+        internalId
+        description
+        isActive
+        isArchive
+        coordinate{
+            type
+            coordinates
+        }
+        propertyFile{
+            id
+            fileType
+            propertyId
+            fileUrl
+            filename
+            timestamp
+            timestamp_update
+        }
+        timestamp
+        timestamp_update
+    }
+}

@@ -1,0 +1,38 @@
+query getUserProfile {
+    getUserProfile {
+        id
+        email
+        firstname
+        lastname
+        isSuperadmin
+        userDataSet
+        tokentype
+        expiresin
+        accesstoken
+        licensenumber {
+            id
+            name
+            company
+        }
+        role {
+            id
+            name
+            code
+        }
+        primaryRole
+        region
+        property {
+            id
+            name
+            internalId
+        }
+        languageCode {
+            id
+            code
+            name
+        }
+        imei
+        timeInterval
+        radius
+    }
+}

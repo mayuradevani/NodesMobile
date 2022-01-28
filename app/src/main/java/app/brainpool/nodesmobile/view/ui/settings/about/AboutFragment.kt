@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.AboutFragmentBinding
 
 class AboutFragment : Fragment(R.layout.about_fragment) {
-
 
     lateinit var binding: AboutFragmentBinding
     private lateinit var viewModel: AboutViewModel
@@ -21,7 +19,9 @@ class AboutFragment : Fragment(R.layout.about_fragment) {
         savedInstanceState: Bundle?
     ): View? {
         binding = AboutFragmentBinding.inflate(inflater)
-        binding.ivBack.setOnClickListener { (activity as MainActivity).removeFragment("About") }
+        binding.ivBack.setOnClickListener {
+            activity?.onBackPressed()
+        }
         return binding.root
     }
 

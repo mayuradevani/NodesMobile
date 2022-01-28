@@ -1,0 +1,9 @@
+query logoutUserData {
+    logoutUserData {
+        success
+        detail {
+            code
+            message
+        }
+    }
+}

@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import app.brainpool.nodesmobile.databinding.LanguageListFragmentBinding
 import app.brainpool.nodesmobile.util.gone
+import app.brainpool.nodesmobile.util.observeViewState
 import app.brainpool.nodesmobile.util.visible
 import app.brainpool.nodesmobile.view.adapter.LanguageAdapter
-import app.brainpool.nodesmobile.view.state.ViewState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -33,37 +33,61 @@ class LanguageListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.languageRv.adapter = languageAdapter
-        viewModel.queryLanguageList()
+        viewModel.queryLanguageList(requireContext())
         observeLiveData()
     }
 
     private fun observeLiveData() {
-        viewModel.launguageCodeList.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is ViewState.Loading -> {
+        observeViewState(viewModel.launguageCodeList, binding.languageFetchProgress) { response ->
+            if (response != null) {
+                if (response?.data == null) {
+                    languageAdapter.submitList(emptyList())
                     binding.languageRv.gone()
                     binding.languageFetchProgress.gone()
-                }
-                is ViewState.Success -> {
-                    if (response.value?.data?.getAllLanguageCodes?.size == 0) {
+                    binding.languageEmptyText.visible()
+                } else {
+                    if (response.data?.getAllLanguageCodes?.size == 0) {
                         binding.languageRv.gone()
                         binding.languageFetchProgress.gone()
                         binding.languageEmptyText.visible()
                     } else {
                         binding.languageRv.visible()
                         binding.languageEmptyText.gone()
-                        val results = response.value?.data?.getAllLanguageCodes
+                        val results = response.data?.getAllLanguageCodes
                         languageAdapter.submitList(results)
                         binding.languageFetchProgress.gone()
                     }
                 }
-                is ViewState.Error->{
-                    languageAdapter.submitList(emptyList())
-                    binding.languageRv.gone()
-                    binding.languageFetchProgress.gone()
-                    binding.languageEmptyText.visible()
-                }
+
             }
         }
+
+//        viewModel.launguageCodeList.observe(viewLifecycleOwner) { response ->
+//            when (response) {
+//                is ViewState.Loading -> {
+//                    binding.languageRv.gone()
+//                    binding.languageFetchProgress.gone()
+//                }
+//                is ViewState.Success -> {
+//                    if (response.value?.data?.getAllLanguageCodes?.size == 0) {
+//                        binding.languageRv.gone()
+//                        binding.languageFetchProgress.gone()
+//                        binding.languageEmptyText.visible()
+//                    } else {
+//                        binding.languageRv.visible()
+//                        binding.languageEmptyText.gone()
+//                        val results = response.value?.data?.getAllLanguageCodes
+//                        languageAdapter.submitList(results)
+//                        binding.languageFetchProgress.gone()
+//                    }
+//                }
+//                is ViewState.Error -> {
+//                    languageAdapter.submitList(emptyList())
+//                    binding.languageRv.gone()
+//                    binding.languageFetchProgress.gone()
+//                    binding.languageEmptyText.visible()
+//                }
+//            }
+//        }
     }
 }

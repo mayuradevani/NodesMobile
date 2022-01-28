@@ -1,7 +1,7 @@
 package dubai.business.womencouncil.data.dataSource
 
 import app.brainpool.nodesmobile.R
-import app.brainpool.nodesmobile.model.HomeListItem
+import app.brainpool.nodesmobile.data.models.HomeListItem
 
 open class DataServer private constructor() {
     companion object {

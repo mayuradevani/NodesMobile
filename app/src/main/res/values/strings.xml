@@ -1,17 +1,8 @@
 <resources>
     <string name="app_name">NodesMobile</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="submit">Submit</string>
-    <string name="email">Email</string>
     <string name="site_notes">Site Notes</string>
-    <string name="nodes">NODES</string>
-    <string name="mobile">mobile</string>
-    <string name="powered_by">Powered by</string>
-    <string name="welcome">WELCOME</string>
     <string name="validate">validate</string>
-    <string name="error">Error:</string>
-    <string name="cause_of_error">************ CAUSE OF ERROR ************\n\n</string>
-    <string name="connection_error">Connection Error</string>
     <string name="please_open">Please open the email on this device and return to this application to continue</string>
     <string name="a_one_time">A one-time activation link has been sent to your email address</string>
     <string name="did_not_re">Did not receive a link?</string>
@@ -19,7 +10,6 @@
     <string name="the_nodes">The Nodes platform is only available to licensed users with registered email addresses.\n\nIf you did not yet receive an email, please wait a few minutes and check your junk mail, otherwise contact your system administrator</string>
     <string name="please_enter">Please enter your registered Nodes email address to continue</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ian_b">Ian B</string>
     <string name="record_site_note">Record Site Note</string>
     <string name="tasks">Tasks</string>
@@ -28,7 +18,6 @@
     <string name="units">Units</string>
     <string name="metric">metric</string>
     <string name="device_tracking">Device tracking</string>
-    <string name="device_path">Device Path</string>
     <string name="show_path">Show path</string>
     <string name="auto_map_download">Auto map download</string>
     <string name="data_usage">Data Usage</string>
@@ -39,7 +28,6 @@
     <string name="default_map">Default Map</string>
     <string name="night_mode">Night Mode</string>
     <string name="map">Map</string>
-    <string name="thermal">Thermal</string>
     <string name="logout">Logout</string>
     <string name="_34_41_28_68">34°41\'28.68\" N</string>
     <string name="_135_10">135°10\'58.80\" E</string>
@@ -47,14 +35,35 @@
     <string name="utc_09_12_24">UTC 09:12:24</string>
     <string name="numbers">Numbers</string>
     <string name="app_notification_channel_id">app_channel</string>
-    <string name="notification_title">noti titlwe</string>
     <string name="snooze">Snooze</string>
     <string name="app_notification_channel_name">BrainPool</string>
     <string name="off">Off</string>
     <string name="about">About NODES</string>
     <string name="about_text">about text</string>
-    <string name="change_theme">Change Theme</string>
-
+    <string name="about_nodes">About NODES</string>
+    <string name="on">On</string>
+    <string name="imperial">imperial</string>
+    <string name="nautical">nautical</string>
+    <string name="wifiOnly">Wifi only</string>
+    <string name="always_text">"NODES will use cellular data to download maps if permitted by system settings "</string>
+    <string name="wifi_only_text">NODES will download new maps only when connected to wifi</string>
+    <string name="automatic_text">"Automatic night mode will darken the screen when ambient light conditions are low"</string>
+    <string name="on_text">Night mode remains On</string>
+    <string name="off_text">Day mode remains On</string>
+    <string name="lastUsed">Last Used</string>
+    <string name="google_maps_tit">Google maps</string>
+    <string name="google_maps_txt">NODES will use the device default base map</string>
+    <string name="lastUsed_txt">NODES will display the last map used</string>
+    <string name="newest_txt">NODES will display the most up to date map available, based on flight date</string>
+    <string name="help_text">Help Text</string>
+    <string name="read_write_permission_rationale">Storage permission needed to access offline maps</string>
+    <string name="ok">OK</string>
+    <string name="overlay">Overlay</string>
+    <string name="device">Device</string>
+    <string name="nodes_device_link_id">NODES device link ID</string>
+    <string name="nodes_device_id">Nodes device Id</string>
+    <string name="unable_to_send_token">Unable to send token</string>
+    <string name="unable_login">Unable to login</string>
     <string-array name="location">
         <item>Cypress Lakes, Hunter Valley, NSW</item>
     </string-array>

@@ -1,10 +1,20 @@
 package app.brainpool.nodesmobile.Repository
 
-import app.brainpool.nodesmobile.LanguageCodeDataQuery
-import app.brainpool.nodesmobile.LoginMutation
+import android.content.Context
+import app.brainpool.nodesmobile.*
+import app.brainpool.nodesmobile.type.NotificationInput
+import app.brainpool.nodesmobile.type.TrackerPositionInput
+import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 
 interface NodesMobRepository {
-    suspend fun queryLaunguageCodeData(): Response<LanguageCodeDataQuery.Data>
-    suspend fun queryLoginWithEmail(email: String): Response<LoginMutation.Data>
+    suspend fun launguageCodeData(context:Context): Response<LanguageCodeDataQuery.Data>
+    suspend fun loginWithEmail(context:Context,email: String): Response<LoginMutation.Data>
+    suspend fun getAllProperties(context: Context, isArchive: Input<Boolean>): Response<GetAllPropertiesQuery.Data>
+    suspend fun getUserProfile(context: Context): Response<GetUserProfileQuery.Data>
+    suspend fun getAllMapsByPropertyIdQuery(context:Context,propertyId: String): Response<GetAllMapsByPropertyIdQuery.Data>
+    suspend fun downloadMapsQuery(context:Context, fileName: String): Response<DownloadMapsQuery.Data>
+    suspend fun updateOrStoreNotificationToken(context:Context,data: NotificationInput): Response<UpdateOrStoreNotificationTokenMutation.Data>
+    suspend fun createTrackerPositionData(context:Context,data: TrackerPositionInput): Response<CreateTrackerPositionDataMutation.Data>
+    suspend fun logout(context: Context): Response<LogoutUserDataQuery.Data>
 }

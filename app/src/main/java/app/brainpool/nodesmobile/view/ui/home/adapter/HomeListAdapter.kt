@@ -3,7 +3,7 @@ package app.brainpool.nodesmobile.view.ui.home.adapter
 import android.graphics.Typeface
 import android.widget.TextView
 import app.brainpool.nodesmobile.R
-import app.brainpool.nodesmobile.model.HomeListItem
+import app.brainpool.nodesmobile.data.models.HomeListItem
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 

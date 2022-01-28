@@ -1,0 +1,10 @@
+mutation UpdateOrStoreNotificationToken ($notificationInput:NotificationInput!){
+    updateOrStoreNotificationToken(data:$notificationInput) {
+        success
+        detail {
+            code
+            message
+            type
+        }
+    }
+}

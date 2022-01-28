@@ -1,0 +1,6 @@
+query downloadMaps($filename:String!){
+    downloadMaps(filename:$filename)
+    {
+        link
+    }
+}

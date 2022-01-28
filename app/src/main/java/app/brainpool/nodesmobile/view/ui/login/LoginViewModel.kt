@@ -1,10 +1,12 @@
 package app.brainpool.nodesmobile.view.ui.login
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.brainpool.nodesmobile.LoginMutation
+import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.Repository.NodesMobRepository
 import app.brainpool.nodesmobile.util.doInBackground
 import app.brainpool.nodesmobile.view.state.ViewState
@@ -26,9 +28,9 @@ class LoginViewModel @Inject constructor(
     val login: LiveData<ViewState<Response<LoginMutation.Data>>>
         get() = _login
 
-    fun login(email: String) = viewModelScope.launch {
-        doInBackground(_login, "Unable to login") {
-            repository.queryLoginWithEmail(email)
+    fun login(context: Context, email: String) = viewModelScope.launch {
+        doInBackground(_login, context.getString(R.string.unable_login)) {
+            repository.loginWithEmail(context, email)
         }
     }
 }

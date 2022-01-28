@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_page_white"
+        tools:context=".view.ui.login.LoginEmailFragment">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSettings"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/grey_bg"
+            android:gravity="center"
+            android:text="@string/default_map"
+            android:textColor="@color/grey_text"
+            android:textSize="25sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/md_transparent"
+            android:padding="18dp"
+            android:src="@drawable/ic_chevron_left"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSettings"
+            app:layout_constraintStart_toStartOf="@+id/tvSettings"
+            app:layout_constraintTop_toTopOf="@+id/tvSettings" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvNewest"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="32dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/newest"
+            android:textColor="@color/text_grey_title"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSettings" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivNewest"
+            android:layout_width="38dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_check"
+            android:tint="@color/green_text"
+            app:layout_constraintBottom_toBottomOf="@+id/tvNewest"
+            app:layout_constraintStart_toEndOf="@+id/guideline1"
+            app:layout_constraintTop_toTopOf="@+id/tvNewest" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLastUsed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/lastUsed"
+            android:textColor="@color/text_grey_title"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline1"
+            app:layout_constraintStart_toStartOf="@+id/tvNewest"
+            app:layout_constraintTop_toBottomOf="@+id/tvNewest" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivLastUsed"
+            android:layout_width="38dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_check"
+            android:tint="@color/green_text"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLastUsed"
+            app:layout_constraintStart_toEndOf="@+id/guideline1"
+            app:layout_constraintTop_toTopOf="@+id/tvLastUsed" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvGoogleMaps"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/google_maps_tit"
+            android:textColor="@color/text_grey_title"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline1"
+            app:layout_constraintStart_toStartOf="@+id/tvNewest"
+            app:layout_constraintTop_toBottomOf="@+id/tvLastUsed" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivGoogleMaps"
+            android:layout_width="38dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_check"
+            android:tint="@color/green_text"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvGoogleMaps"
+            app:layout_constraintStart_toEndOf="@+id/guideline1"
+            app:layout_constraintTop_toTopOf="@+id/tvGoogleMaps" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvModeText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="74dp"
+            android:layout_marginEnd="32dp"
+            android:text="@string/newest_txt"
+            android:textColor="@color/text_grey_title"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvGoogleMaps" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -11,8 +11,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center_horizontal"
-
-        app:tint="@color/grey_dark" />
+        app:tint="@color/icon_dark_grey" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -22,6 +21,6 @@
         android:gravity="center"
         android:text="@string/numbers"
         android:textAlignment="center"
-        android:textColor="@color/grey_dark"
+        android:textColor="@color/text_dark_grey"
         android:textSize="8sp" />
 </androidx.appcompat.widget.LinearLayoutCompat>

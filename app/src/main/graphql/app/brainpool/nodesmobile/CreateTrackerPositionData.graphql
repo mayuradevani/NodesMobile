@@ -1,0 +1,9 @@
+mutation createTrackerPositionData($data:TrackerPositionInput!) {
+    createTrackerPositionData(data:$data) {
+        success
+        detail {
+            type
+            message
+        }
+    }
+}

@@ -15,6 +15,5 @@ class NodesMobileApp : Application() {
             .setPrefsName(packageName)
             .setUseDefaultSharedPreference(true)
             .build()
-
     }
 }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_home"
+        android:id="@+id/mapFragment"
         android:icon="@drawable/ic_map"
         android:title="@string/map" />
     <item
-        android:id="@+id/menu_site_notes"
+        android:id="@+id/siteNotesFragment"
         android:icon="@drawable/ic_notes"
         android:title="@string/site_notes" />
     <item
-        android:id="@+id/menu_tasks"
+        android:id="@+id/tasksFragment"
         android:icon="@drawable/ic_task"
         android:title="@string/tasks" />
     <item
-        android:id="@+id/menu_notifications"
+        android:id="@+id/notificationsFragment"
         android:icon="@drawable/ic_notifications"
         android:title="@string/notifications" />
 </menu>

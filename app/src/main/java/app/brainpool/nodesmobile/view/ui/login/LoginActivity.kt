@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.LoginBinding
+import app.brainpool.nodesmobile.util.navigate
 import app.brainpool.nodesmobile.view.ui.home.HomeActivity
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.pixplicity.easyprefs.library.Prefs
@@ -26,32 +27,6 @@ class LoginActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
     lateinit var viewModel: LoginViewModel
-    override fun onStart() {
-        super.onStart()
-        FirebaseDynamicLinks.getInstance()
-            .getDynamicLink(intent)
-            .addOnSuccessListener(this) { link ->
-                navController.handleDeepLink(Intent().apply {
-                    try {
-                        var deepLink: Uri? = link.link
-                        val token: String = deepLink?.getQueryParameter("token").toString()
-                        if (!token.isNullOrEmpty()) {
-                            navController.navigate(R.id.holdingFragment)
-                            Prefs.putString(PrefsKey.AUTH_KEY, token)
-                            Log.v(
-                                ContentValues.TAG,
-                                "Key: " + Prefs.getString(PrefsKey.AUTH_KEY, "not rec")
-                            )
-                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                            startActivity(intent)
-                            this@LoginActivity.finish()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                })
-            }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +35,40 @@ class LoginActivity : AppCompatActivity() {
         setContentView(view)
         navController = findNavController(R.id.navLogin)
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+
+        try {
+            if (intent != null)
+                FirebaseDynamicLinks.getInstance()
+                    .getDynamicLink(intent)
+                    .addOnSuccessListener(this) { link ->
+                        navController?.handleDeepLink(Intent().apply {
+                            try {
+                                if (link != null) {
+                                    var deepLink: Uri? = link.link
+                                    val authToken: String =
+                                        deepLink?.getQueryParameter("token").toString()
+                                    if (!authToken.isNullOrEmpty()) {
+                                        navController?.navigate(R.id.holdingFragment)
+                                        Prefs.putString(PrefsKey.AUTH_KEY, authToken)
+                                        val userId: String =
+                                            deepLink?.getQueryParameter("userId").toString()
+                                        Prefs.putString(PrefsKey.USER_ID, userId)
+                                        Log.v(
+                                            ContentValues.TAG,
+                                            "Key: " + Prefs.getString(PrefsKey.AUTH_KEY, "not rec")
+                                        )
+                                        navigate<HomeActivity>()
+                                        this@LoginActivity.finish()
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        })
+                    }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

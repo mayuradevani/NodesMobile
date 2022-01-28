@@ -32,7 +32,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                     binding.edtEmail.error = it
                 }.apply { if (!this) return@setOnClickListener }
 
-                viewModel.login(binding.edtEmail.text.toString())
+                viewModel.login(requireContext(),binding.edtEmail.text.toString())
             }
             return binding.root
         } catch (e: Exception) {

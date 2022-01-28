@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_page_white"
+        tools:context=".view.ui.login.LoginEmailFragment">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSettings"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/grey_bg"
+            android:gravity="center"
+            android:text="@string/help"
+            android:textColor="@color/grey_text"
+            android:textSize="25sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/md_transparent"
+            android:padding="18dp"
+            android:src="@drawable/ic_chevron_left"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSettings"
+            app:layout_constraintStart_toStartOf="@+id/tvSettings"
+            app:layout_constraintTop_toTopOf="@+id/tvSettings" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="36dp"
+            android:text="@string/help_text"
+            android:textColor="@color/grey_text"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSettings" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
