@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity() {
             val view = binding.root
             setContentView(view)
 
-            if (!intent.getStringExtra(GlobalVar.EXTRA_FILE_NAME).isNullOrEmpty()) {
+            if (!intent.getStringExtra(GlobalVar.EXTRA_FILE_NAME)
+                    .isNullOrEmpty()
+            ) {//This is used for map update notification received from server
                 Prefs.putBoolean(PrefsKey.UPDATE_MAP, true)
                 Prefs.putString(
                     PrefsKey.MAP_TILE_FILE_NAME,
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 sendTokenToServer(this, Prefs.getString(PrefsKey.FIREBASE_TOKEN, ""))
 
             binding.ivSetting.setOnClickListener {
-                if (!isDesiredDestination())
+                if (!isDesiredDestination(R.id.settingsFragment))
                     navController.navigate(R.id.settingsFragment)
                 else
                     navController.popBackStack()
@@ -61,9 +63,16 @@ class MainActivity : AppCompatActivity() {
         observeLiveData()
     }
 
-    private fun isDesiredDestination(): Boolean {
+    override fun onBackPressed() {
+        if (isDesiredDestination(R.id.mapFragment)) {
+            finish()
+        }else
+            super.onBackPressed()
+    }
+
+    private fun isDesiredDestination(settingsFragment: Int): Boolean {
         return with(navController) {
-            currentDestination == graph[R.id.settingsFragment]
+            currentDestination == graph[settingsFragment]
         }
     }
 

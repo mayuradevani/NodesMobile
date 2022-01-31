@@ -9,7 +9,6 @@ buildscript {
         hilt_compiler_version = '1.0.0-alpha03'
         legacy_support_v4_version = '1.0.0'
         navigationVersion = "2.3.3"
-        def koin = "2.0.1"
     }
     repositories {
         google()

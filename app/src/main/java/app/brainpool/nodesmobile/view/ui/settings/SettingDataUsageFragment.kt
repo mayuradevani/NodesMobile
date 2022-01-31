@@ -27,7 +27,7 @@ class SettingDataUsageFragment : Fragment(R.layout.setting_data_usage_fragment) 
         binding.ivBack.setOnClickListener {
             activity?.onBackPressed()
         }
-        setCheck(Prefs.getString(PrefsKey.DATA_USAGE, "Always"))
+        setCheck(Prefs.getString(PrefsKey.DATA_USAGE, getString(R.string.always)))
         binding.tvAlways.setOnClickListener {
             try {
                 Prefs.putString(PrefsKey.DATA_USAGE, getString(R.string.always))

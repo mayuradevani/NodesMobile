@@ -8,7 +8,11 @@
         android:id="@+id/mapFragment"
         android:name="app.brainpool.nodesmobile.view.ui.map.MapFragment"
         android:label="MapFragment"
-        tools:layout="@layout/map_fragment" />
+        tools:layout="@layout/map_fragment" >
+        <action
+            android:id="@+id/action_mapFragment_self"
+            app:destination="@id/mapFragment" />
+    </fragment>
     <fragment
         android:id="@+id/tasksFragment"
         android:name="app.brainpool.nodesmobile.view.ui.tasks.TasksFragment"

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Environment
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
@@ -66,8 +68,6 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
     private val MaximumZoom = 18.0f
 
     private lateinit var centerLatLong: LatLng
-    private var mView: View? = null
-    var isAlready: Boolean = false
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -85,24 +85,28 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 super.onLocationResult(p0)
-                Log.v(
-                    TAG,
-                    "Last Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
-                )
-                if (Prefs.getBoolean(PrefsKey.DEVICE_TRACKING)) {
-                    val results = FloatArray(1)
-                    Location.distanceBetween(
-                        lastLocation.latitude, lastLocation.longitude,
-                        p0.lastLocation.latitude, p0.lastLocation.longitude, results
+                try {
+                    Log.v(
+                        TAG,
+                        "Last Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
                     )
-                    if (results.get(0) >= Prefs.getString(PrefsKey.RADIUS).toInt()) {
-                        lastLocation = p0.lastLocation
-                        Log.v(
-                            TAG,
-                            "Tracking Location: ${lastLocation.latitude} and ${lastLocation.longitude}"
+                    if (Prefs.getBoolean(PrefsKey.DEVICE_TRACKING)) {
+                        val results = FloatArray(1)
+                        Location.distanceBetween(
+                            lastLocation.latitude, lastLocation.longitude,
+                            p0.lastLocation.latitude, p0.lastLocation.longitude, results
                         )
-                        createTrackerPositionData(lastLocation.latitude, lastLocation.longitude)
+                        if (results.get(0) >= Prefs.getString(PrefsKey.RADIUS).toInt()) {
+                            lastLocation = p0.lastLocation
+                            Log.v(
+                                TAG,
+                                "Tracking Location: ${lastLocation.latitude} and ${lastLocation.longitude}"
+                            )
+                            createTrackerPositionData(lastLocation.latitude, lastLocation.longitude)
+                        }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
@@ -112,67 +116,73 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (mView == null) {
+        if (this::binding.isInitialized) {
+            binding
+        } else {
             binding = MapFragmentBinding.inflate(inflater)
-            mView = binding.root
-        } else
-            isAlready = true
-        return mView
+            setUI()
+        }
+        observeLiveData()
+        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (!isAlready) {
-            centerLatLong = LatLng(
-                Prefs.getDouble(PrefsKey.MAP_CENTER_LATI),
-                Prefs.getDouble(PrefsKey.MAP_CENTER_LONGI)
+    private fun setUI() {
+        centerLatLong = LatLng(
+            Prefs.getDouble(PrefsKey.MAP_CENTER_LATI),
+            Prefs.getDouble(PrefsKey.MAP_CENTER_LONGI)
+        )
+        if (Prefs.getString(
+                PrefsKey.MAP_TYPE,
+                getString(R.string.overlay)
+            ) == getString(R.string.device)
+        ) {
+            binding.tvMapType.text = getString(R.string.device)
+            binding.tvMapType.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.grey_text
+                )
             )
+        } else {
+            binding.tvMapType.text = getString(R.string.overlay)
+            binding.tvMapType.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.green_text
+                )
+            )
+        }
+        binding.tvMapType.setOnClickListener {
             if (Prefs.getString(
                     PrefsKey.MAP_TYPE,
                     getString(R.string.overlay)
                 ) == getString(R.string.device)
             ) {
-                binding.tvMapType.text = getString(R.string.device)
-                binding.tvMapType.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.grey_text
-                    )
-                )
+                Prefs.putString(PrefsKey.MAP_TYPE, getString(R.string.overlay))
             } else {
-                binding.tvMapType.text = getString(R.string.overlay)
-                binding.tvMapType.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.green_text
-                    )
-                )
+                Prefs.putString(PrefsKey.MAP_TYPE, getString(R.string.device))
             }
-            binding.tvMapType.setOnClickListener {
-                if (Prefs.getString(
-                        PrefsKey.MAP_TYPE,
-                        getString(R.string.overlay)
-                    ) == getString(R.string.device)
-                ) {
-                    Prefs.putString(PrefsKey.MAP_TYPE, getString(R.string.overlay))
-                } else {
-                    Prefs.putString(PrefsKey.MAP_TYPE, getString(R.string.device))
-                }
-                (activity as MainActivity).navController.navigate(R.id.mapFragment)
-            }
-            binding.ivUpDown.setOnClickListener { binding.tvMapType.performClick() }
-            if (Prefs.getBoolean(PrefsKey.UPDATE_MAP)) {
-                checkPermissionAndDownloadMapTiles()
-                Prefs.putBoolean(PrefsKey.UPDATE_MAP, false)
-            } else if (Prefs.getString(
-                    PrefsKey.MAP_TYPE,
-                    getString(R.string.overlay)
-                ) == getString(R.string.overlay)
-            ) {
-                checkPermissionAndDownloadMapTiles()
-            }
-            observeLiveData()
+            (activity as MainActivity).navController.navigate(R.id.mapFragment)
         }
+        binding.ivUpDown.setOnClickListener { binding.tvMapType.performClick() }
+        if (Prefs.getBoolean(PrefsKey.UPDATE_MAP) //This is used for map update notification received from server
+            || Prefs.getString(PrefsKey.DEFAULT_MAP) == getString(R.string.newest)//This is used for map update settings
+            || Prefs.getString(
+                PrefsKey.MAP_TYPE,
+                getString(R.string.overlay)
+            ) == getString(R.string.overlay)//This is used for map type selection on map page itself
+            || (Prefs.getString(PrefsKey.DATA_USAGE)
+                .equals(getString(R.string.wifiOnly)) && context?.isWifiNetworkConnected() == true)//This is used for wifi/data usage settings
+        ) {
+            checkPermissionAndDownloadMapTiles()
+            Prefs.putBoolean(PrefsKey.UPDATE_MAP, false)
+        }
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 
     private fun checkPermissionAndDownloadMapTiles() {
@@ -228,8 +238,9 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
                     val mapTileList = response?.data?.downloadMaps
                     if (mapTileList != null) {
                         val count = getAllImageFilesInAllFolder(mapDir)
-                        Log.v(TAG, "Total Images: " + count)
-                        if (mapTileList.size != count)
+                        Log.v(TAG, "Total Images: $count")
+                        if (mapTileList.size != count) {
+                            Log.v(TAG, "Downloading Map tiles")
                             for (p in mapTileList) {
                                 var fName = p?.link.toString()
                                 fName = fName.substring(fName.indexOf("maptiles/") + 9)
@@ -238,13 +249,13 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
                                         Glide.with(requireContext())
                                             .asBitmap()
                                             .load(p?.link.toString()) // sample image
-                                            .placeholder(android.R.drawable.progress_indeterminate_horizontal) // need placeholder to avoid issue like glide annotations
-                                            .error(android.R.drawable.stat_notify_error) // need error to avoid issue like glide annotations
                                             .submit()
                                             .get(), fName
                                     )
                                 }
                             }
+                            Log.v(TAG, "Downloading Map tiles complete")
+                        }
                     }
                 }
             }
@@ -310,7 +321,7 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
                     )
                 )
             )!!
-            placeMarkerOnMap(centerLatLong, MinimumZoom)//Map tiles center
+           // placeMarkerOnMap(centerLatLong, MinimumZoom)//Map tiles center
         }
 //            else {
 //                val tileProvider: TileProvider = object : UrlTileProvider(256, 256) {
@@ -337,7 +348,6 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
 //            )
 //            googleMap.moveCamera(center)
 
-
 //            updateFocusedRegion()
 //        } else {
         googleMap.isMyLocationEnabled = true
@@ -348,11 +358,6 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
                     lastLocation = location
                     centerLatLong = LatLng(lastLocation.latitude, lastLocation.longitude)
                 }
-
-                //            val center = CameraUpdateFactory.newLatLng(
-                //                centerLatLong            //	20.593684	78.96288 india (for testing)
-                //            )
-                //            googleMap.moveCamera(center)
                 googleMap.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         centerLatLong,
@@ -390,7 +395,8 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
         super.onResume()
         if (!locationUpdateState) {
             startLocationUpdates()
-        }
+        } else
+            findNavController().navigate(MapFragmentDirections.actionMapFragmentSelf());
     }
 
     override fun onPause() {
@@ -423,7 +429,7 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
-            null /* Looper */
+            Looper.getMainLooper() /* Looper */
         )
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
@@ -438,7 +444,7 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
 
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
-        val client = LocationServices.getSettingsClient(activity)
+        val client = LocationServices.getSettingsClient(requireActivity())
         val task = client.checkLocationSettings(builder.build())
 
         task.addOnSuccessListener {

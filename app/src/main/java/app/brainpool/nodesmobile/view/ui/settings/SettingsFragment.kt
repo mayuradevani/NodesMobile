@@ -49,9 +49,9 @@ class SettingsFragment : Fragment(R.layout.settings_fragment) {
 //        binding.tvUnits.setOnClickListener {
 //            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingUnitsFragment())
 //        }
-//        binding.tvDataUsage.setOnClickListener {
-//            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingDataUsageFragment())
-//        }
+        binding.tvDataUsage.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingDataUsageFragment())
+        }
 //        binding.tvDefaultMap.setOnClickListener {
 //            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingDefaultMapFragment())
 //        }
