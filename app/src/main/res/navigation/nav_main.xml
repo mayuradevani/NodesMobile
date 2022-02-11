@@ -8,7 +8,7 @@
         android:id="@+id/mapFragment"
         android:name="app.brainpool.nodesmobile.view.ui.map.MapFragment"
         android:label="MapFragment"
-        tools:layout="@layout/map_fragment" >
+        tools:layout="@layout/map_fragment">
         <action
             android:id="@+id/action_mapFragment_self"
             app:destination="@id/mapFragment" />
@@ -32,25 +32,13 @@
         android:id="@+id/settingsFragment"
         android:name="app.brainpool.nodesmobile.view.ui.settings.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/settings_fragment" >
+        tools:layout="@layout/settings_fragment">
         <action
             android:id="@+id/action_settingsFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
         <action
-            android:id="@+id/action_settingsFragment_to_settingNightModeFragment"
-            app:destination="@id/settingNightModeFragment" />
-        <action
             android:id="@+id/action_settingsFragment_to_helpFragment"
             app:destination="@id/helpFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_settingDefaultMapFragment"
-            app:destination="@id/settingDefaultMapFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_settingDataUsageFragment"
-            app:destination="@id/settingDataUsageFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_settingUnitsFragment"
-            app:destination="@id/settingUnitsFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_IMEIFragment"
             app:destination="@id/IMEIFragment" />
@@ -61,25 +49,9 @@
         android:label="AboutFragment"
         tools:layout="@layout/about_fragment" />
     <fragment
-        android:id="@+id/settingNightModeFragment"
-        android:name="app.brainpool.nodesmobile.view.ui.settings.SettingNightModeFragment"
-        android:label="SettingNightModeFragment" />
-    <fragment
         android:id="@+id/helpFragment"
         android:name="app.brainpool.nodesmobile.view.ui.settings.HelpFragment"
         android:label="HelpFragment" />
-    <fragment
-        android:id="@+id/settingUnitsFragment"
-        android:name="app.brainpool.nodesmobile.view.ui.settings.SettingUnitsFragment"
-        android:label="SettingUnitsFragment" />
-    <fragment
-        android:id="@+id/settingDataUsageFragment"
-        android:name="app.brainpool.nodesmobile.view.ui.settings.SettingDataUsageFragment"
-        android:label="SettingDataUsageFragment" />
-    <fragment
-        android:id="@+id/settingDefaultMapFragment"
-        android:name="app.brainpool.nodesmobile.view.ui.settings.SettingDefaultMapFragment"
-        android:label="SettingDefaultMapFragment" />
     <fragment
         android:id="@+id/IMEIFragment"
         android:name="app.brainpool.nodesmobile.view.ui.settings.IMEIFragment"

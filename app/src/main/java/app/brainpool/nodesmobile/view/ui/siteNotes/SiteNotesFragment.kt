@@ -14,7 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SiteNotesFragment : Fragment(R.layout.site_notes_fragment) {
 
-
     lateinit var binding: SiteNotesFragmentBinding
     private lateinit var viewModel: HomeViewModel
 

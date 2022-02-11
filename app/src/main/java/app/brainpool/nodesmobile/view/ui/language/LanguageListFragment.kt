@@ -61,33 +61,5 @@ class LanguageListFragment : Fragment() {
 
             }
         }
-
-//        viewModel.launguageCodeList.observe(viewLifecycleOwner) { response ->
-//            when (response) {
-//                is ViewState.Loading -> {
-//                    binding.languageRv.gone()
-//                    binding.languageFetchProgress.gone()
-//                }
-//                is ViewState.Success -> {
-//                    if (response.value?.data?.getAllLanguageCodes?.size == 0) {
-//                        binding.languageRv.gone()
-//                        binding.languageFetchProgress.gone()
-//                        binding.languageEmptyText.visible()
-//                    } else {
-//                        binding.languageRv.visible()
-//                        binding.languageEmptyText.gone()
-//                        val results = response.value?.data?.getAllLanguageCodes
-//                        languageAdapter.submitList(results)
-//                        binding.languageFetchProgress.gone()
-//                    }
-//                }
-//                is ViewState.Error -> {
-//                    languageAdapter.submitList(emptyList())
-//                    binding.languageRv.gone()
-//                    binding.languageFetchProgress.gone()
-//                    binding.languageEmptyText.visible()
-//                }
-//            }
-//        }
     }
 }

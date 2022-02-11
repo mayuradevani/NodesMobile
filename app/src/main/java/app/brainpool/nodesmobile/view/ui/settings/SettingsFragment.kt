@@ -38,30 +38,8 @@ class SettingsFragment : Fragment(R.layout.settings_fragment) {
         binding.switchDeviceTracking.setOnCheckedChangeListener { buttonView, isChecked ->
             Prefs.putBoolean(PrefsKey.DEVICE_TRACKING, isChecked)
         }
-
-//        binding.tvNightModeVal.text = Prefs.getString(PrefsKey.NIGHT_MODE, getString(R.string.auto))
-//        binding.tvNightMode.setOnClickListener {
-//            loadNightMode()
-//        }
-//        binding.tvNightModeVal.setOnClickListener {
-//            loadNightMode()
-//        }
-//        binding.tvUnits.setOnClickListener {
-//            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingUnitsFragment())
-//        }
-        binding.tvDataUsage.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingDataUsageFragment())
-        }
-//        binding.tvDefaultMap.setOnClickListener {
-//            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingDefaultMapFragment())
-//        }
         return binding.root
     }
-
-    private fun loadNightMode() {
-        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSettingNightModeFragment())
-    }
-
     private fun loadAboutUs() {
         findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAboutFragment())
     }

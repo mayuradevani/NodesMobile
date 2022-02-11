@@ -13,8 +13,6 @@ class HomeListAdapter(sampleData: MutableList<HomeListItem>) :
         try {
             helper.setText(R.id.tvTitle, item.title)
             helper.setImageResource(R.id.ivIcon, item.icon)
-            if (item.title == "MAP") {
-            }
             helper.setText(R.id.tvTitle, item.title)
             if (item.selected) {
                 helper.getView<TextView>(R.id.tvTitle).typeface = Typeface.DEFAULT_BOLD

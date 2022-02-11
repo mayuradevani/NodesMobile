@@ -47,8 +47,6 @@ class MapViewModel @Inject constructor(private val repository: NodesMobRepositor
 
     fun createTrackerPositionData(requireContext: Context, latLng: LatLongInput) {
         doInBackground(_tracker, "Didn't save tracker info") {
-//            val bm: BatteryManager =
-//                requireContext.getSystemService(BATTERY_SERVICE) as BatteryManager
             val batLevel =
                 (requireContext.getSystemService(BATTERY_SERVICE) as BatteryManager).getIntProperty(
                     BatteryManager.BATTERY_PROPERTY_CAPACITY

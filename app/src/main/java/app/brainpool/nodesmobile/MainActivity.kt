@@ -33,10 +33,10 @@ class MainActivity : AppCompatActivity() {
             binding = MainBinding.inflate(layoutInflater)
             val view = binding.root
             setContentView(view)
-
+            /*This is used for map update notification received from server*/
             if (!intent.getStringExtra(GlobalVar.EXTRA_FILE_NAME)
                     .isNullOrEmpty()
-            ) {//This is used for map update notification received from server
+            ) {
                 Prefs.putBoolean(PrefsKey.UPDATE_MAP, true)
                 Prefs.putString(
                     PrefsKey.MAP_TILE_FILE_NAME,
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (isDesiredDestination(R.id.mapFragment)) {
             finish()
-        }else
+        } else
             super.onBackPressed()
     }
 

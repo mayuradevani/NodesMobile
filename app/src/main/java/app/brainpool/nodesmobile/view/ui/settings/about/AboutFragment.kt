@@ -29,5 +29,4 @@ class AboutFragment : Fragment(R.layout.about_fragment) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(AboutViewModel::class.java)
     }
-
 }

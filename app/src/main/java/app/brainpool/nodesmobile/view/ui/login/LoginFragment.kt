@@ -32,7 +32,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                     binding.edtEmail.error = it
                 }.apply { if (!this) return@setOnClickListener }
 
-                viewModel.login(requireContext(),binding.edtEmail.text.toString())
+                viewModel.login(requireContext(), binding.edtEmail.text.toString())
             }
             return binding.root
         } catch (e: Exception) {
@@ -50,7 +50,8 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         observeViewState(viewModel.login, binding.fetchProgress) { response ->
             if (response != null) {
                 if (response?.data == null) {
-                    materialDialog(response.errors?.get(0)?.message.toString(),"","OK"                        ){
+                    materialDialog(response.errors?.get(0)?.message.toString(), "", "OK")
+                    {
                         it.dismiss()
                     }
                 } else {

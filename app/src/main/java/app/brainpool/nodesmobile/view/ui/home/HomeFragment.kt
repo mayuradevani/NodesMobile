@@ -16,8 +16,8 @@ import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.Splash
 import app.brainpool.nodesmobile.data.PrefsKey
-import app.brainpool.nodesmobile.databinding.HomeFragmentBinding
 import app.brainpool.nodesmobile.data.models.HomeListItem
+import app.brainpool.nodesmobile.databinding.HomeFragmentBinding
 import app.brainpool.nodesmobile.util.materialDialog
 import app.brainpool.nodesmobile.util.navigate
 import app.brainpool.nodesmobile.util.navigateClearStack
@@ -65,17 +65,6 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 R.layout.item_spinner, locationArray
             )
             binding.spinner.adapter = adapter
-//            binding.spinner.onItemSelectedListener = object :
-//                AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(
-//                    parent: AdapterView<*>,
-//                    view: View, position: Int, id: Long
-//                ) {
-//                }
-//
-//                override fun onNothingSelected(parent: AdapterView<*>) {
-//                }
-//            }
             viewModel.getUserProfile(requireContext())
             observeLiveData()
             return binding.root

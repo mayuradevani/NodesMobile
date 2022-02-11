@@ -35,8 +35,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.android.material.snackbar.Snackbar
 import com.pixplicity.easyprefs.library.Prefs
@@ -49,7 +47,7 @@ import java.io.File
 
 
 @AndroidEntryPoint
-class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickListener,
+class MapFragment : Fragment(R.layout.map_fragment),
     OnMapReadyCallback {
 
     lateinit var binding: MapFragmentBinding
@@ -64,7 +62,7 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
     private lateinit var locationRequest: LocationRequest
     var locationUpdateState = false
 
-    private var MinimumZoom = 3.0f//15.5f
+    private var MinimumZoom = 3.0f
     private val MaximumZoom = 18.0f
 
     private lateinit var centerLatLong: LatLng
@@ -180,9 +178,67 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
+    internal fun startLocationUpdates() {
+        if (context?.let {
+                ActivityCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            } != PackageManager.PERMISSION_GRANTED
+        ) {
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
+            return
+        }
+        if (!::locationRequest.isInitialized) {
+            createLocationRequest()
+
+        }
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper() /* Looper */
+        )
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(this)
+    }
+
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest.create().apply {
+            interval = (1000 * Prefs.getString(PrefsKey.TIME_INTERVAL, "5").toLong())
+            fastestInterval = (1000 * Prefs.getString(PrefsKey.TIME_INTERVAL, "5").toLong())
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+
+        val client = LocationServices.getSettingsClient(requireActivity())
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            locationUpdateState = true
+            startLocationUpdates()
+        }
+        task.addOnFailureListener { e ->
+            if (e is ResolvableApiException) {
+                try {
+                    activity?.let {
+                        e.startResolutionForResult(
+                            it,
+                            GlobalVar.REQUEST_CHECK_SETTINGS
+                        )
+                    }
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    sendEx.printStackTrace()
+                }
+            }
+        }
     }
 
     private fun checkPermissionAndDownloadMapTiles() {
@@ -292,105 +348,6 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
             }
         }
 
-    @SuppressLint("MissingPermission")
-    override fun onMapReady(map: GoogleMap) {
-        googleMap = map
-        googleMap.uiSettings.isZoomControlsEnabled = true
-        googleMap.setOnMarkerClickListener(this)
-
-        googleMap.setMaxZoomPreference(MaximumZoom)
-        googleMap.setMinZoomPreference(MinimumZoom)
-
-        googleMap.uiSettings.isTiltGesturesEnabled = false
-        googleMap.uiSettings.isZoomControlsEnabled = true
-        googleMap.uiSettings.isZoomGesturesEnabled = true
-//        if (Prefs.getString(PrefsKey.MAP_TYPE) == getString(R.string.overlay)) {
-
-//        val zoom = CameraUpdateFactory.zoomTo(MinimumZoom)
-//        googleMap.animateCamera(zoom)
-        if (Prefs.getString(
-                PrefsKey.MAP_TYPE,
-                getString(R.string.overlay)
-            ) == getString(R.string.overlay)
-        ) {
-//            if (mapDir.exists())
-            map.addTileOverlay(
-                TileOverlayOptions().tileProvider(
-                    CustomMapTileProvider(
-                        requireContext()
-                    )
-                )
-            )!!
-           // placeMarkerOnMap(centerLatLong, MinimumZoom)//Map tiles center
-        }
-//            else {
-//                val tileProvider: TileProvider = object : UrlTileProvider(256, 256) {
-//                    @Synchronized
-//                    override fun getTileUrl(x: Int, y: Int, zoom: Int): URL? {
-//                        val reversedY = (1 shl zoom) - y - 1
-//                        var s2 =
-//                            MAP_TILES_SERVER + "/" + Prefs.getString(PrefsKey.MAP_TILE_FOLDER) + "/" + zoom + "/" + x + "/" + reversedY + ".png"
-//                        var url: URL? = null
-//                        Log.v(GlobalVar.TAG, s2)
-//                        url = try {
-//                            URL(s2)
-//
-//                        } catch (e: MalformedURLException) {
-//                            throw AssertionError(e)
-//                        }
-//                        return url
-//                    }
-//                }
-//                googleMap.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider))!!
-//            }
-//            val center = CameraUpdateFactory.newLatLng(
-//                centerLatLong            //	20.593684	78.96288 india (for testing)
-//            )
-//            googleMap.moveCamera(center)
-
-//            updateFocusedRegion()
-//        } else {
-        googleMap.isMyLocationEnabled = true
-        activity?.let {
-            fusedLocationClient.lastLocation.addOnSuccessListener(it) { location ->
-                // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    lastLocation = location
-                    centerLatLong = LatLng(lastLocation.latitude, lastLocation.longitude)
-                }
-                googleMap.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        centerLatLong,
-                        MaximumZoom
-                    )
-                )
-                //            placeMarkerOnMap(centerLatLong, MaximumZoom)
-            }
-        }
-//            val zoom = CameraUpdateFactory.zoomTo(MaximumZoom)
-//            googleMap.animateCamera(zoom)
-//        }
-
-    }
-
-//    private fun updateFocusedRegion() {
-//        val actualVisibleBounds: LatLngBounds = googleMap.projection.visibleRegion.latLngBounds
-//        backgroundBounds = actualVisibleBounds
-//        if (backgroundBounds.contains(actualVisibleBounds.center)) {
-//            googleMap.animateCamera(
-//                CameraUpdateFactory.newLatLngBounds(backgroundBounds, 10),
-//                object : GoogleMap.CancelableCallback {
-//                    override fun onCancel() {
-//                        setCameraLimits()
-//                    }
-//
-//                    override fun onFinish() {
-//                        setCameraLimits()
-//                    }
-//                })
-//        }
-//    }
-
     override fun onResume() {
         super.onResume()
         if (!locationUpdateState) {
@@ -402,74 +359,6 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
-
-
-    internal fun startLocationUpdates() {
-        if (context?.let {
-                ActivityCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            } != PackageManager.PERMISSION_GRANTED
-        ) {
-            activity?.let {
-                ActivityCompat.requestPermissions(
-                    it,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    LOCATION_PERMISSION_REQUEST_CODE
-                )
-            }
-            return
-        }
-        if (!::locationRequest.isInitialized) {
-            createLocationRequest()
-
-        }
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper() /* Looper */
-        )
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(this)
-    }
-
-    private fun createLocationRequest() {
-        locationRequest = LocationRequest.create().apply {
-            interval = (1000 * Prefs.getString(PrefsKey.TIME_INTERVAL, "5").toLong())
-            fastestInterval = (1000 * Prefs.getString(PrefsKey.TIME_INTERVAL, "5").toLong())
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-
-        val client = LocationServices.getSettingsClient(requireActivity())
-        val task = client.checkLocationSettings(builder.build())
-
-        task.addOnSuccessListener {
-            locationUpdateState = true
-            startLocationUpdates()
-        }
-        task.addOnFailureListener { e ->
-            if (e is ResolvableApiException) {
-                // Location settings are not satisfied, but this can be fixed
-                // by showing the user a dialog.
-                try {
-                    // Show the dialog by calling startResolutionForResult(),
-                    // and check the result in onActivityResult().
-                    activity?.let {
-                        e.startResolutionForResult(
-                            it,
-                            GlobalVar.REQUEST_CHECK_SETTINGS
-                        )
-                    }
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    sendEx.printStackTrace()
-                    // Ignore the error.
-                }
-            }
-        }
     }
 
     override fun onRequestPermissionsResult(
@@ -485,18 +374,44 @@ class MapFragment : Fragment(R.layout.map_fragment), GoogleMap.OnMarkerClickList
         }
     }
 
-    private fun placeMarkerOnMap(location: LatLng, zoomLevel: Float) {
-        val markerOptions = MarkerOptions().position(location)
-        googleMap.addMarker(markerOptions)
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel))
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(map: GoogleMap) {
+        googleMap = map
+        googleMap.uiSettings.isZoomControlsEnabled = true
+        googleMap.setMaxZoomPreference(MaximumZoom)
+        googleMap.setMinZoomPreference(MinimumZoom)
+
+        googleMap.uiSettings.isTiltGesturesEnabled = false
+        googleMap.uiSettings.isZoomControlsEnabled = true
+        googleMap.uiSettings.isZoomGesturesEnabled = true
+        if (Prefs.getString(
+                PrefsKey.MAP_TYPE,
+                getString(R.string.overlay)
+            ) == getString(R.string.overlay)
+        ) {
+            map.addTileOverlay(
+                TileOverlayOptions().tileProvider(
+                    CustomMapTileProvider(
+                        requireContext()
+                    )
+                )
+            )!!
+        }
+        googleMap.isMyLocationEnabled = true
+        activity?.let {
+            fusedLocationClient.lastLocation.addOnSuccessListener(it) { location ->
+                if (location != null) {
+                    lastLocation = location
+                    centerLatLong = LatLng(lastLocation.latitude, lastLocation.longitude)
+                }
+                googleMap.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        centerLatLong,
+                        MaximumZoom
+                    )
+                )
+            }
+        }
     }
 
-    override fun onMarkerClick(p0: Marker): Boolean = false
-
-//    private fun setCameraLimits() {
-//        if (cameralimitsAreSet == false) {
-//            cameralimitsAreSet = true
-//            googleMap.setLatLngBoundsForCameraTarget(backgroundBounds)
-//        }
-//    }
 }

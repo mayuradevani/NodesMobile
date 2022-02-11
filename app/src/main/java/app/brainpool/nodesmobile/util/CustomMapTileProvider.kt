@@ -46,7 +46,7 @@ class CustomMapTileProvider(context: Context) : TileProvider {
                         Prefs.getString(PrefsKey.MAP_TILE_FOLDER) + "/" + zoom + "/" + x + "/" + reversedY + ".png"
                     var s2 =
                         GlobalVar.MAP_TILES_SERVER + "/" + imageFileName
-//                    Log.v(TAG, "Saving Image: " + s2)
+
                     Glide.with(context)
                         .asBitmap()
                         .listener(object : RequestListener<Bitmap> {
@@ -91,11 +91,11 @@ class CustomMapTileProvider(context: Context) : TileProvider {
                                 target: Target<Bitmap>?,
                                 isFirstResource: Boolean
                             ): Boolean {
-//                                Log.v(TAG, "URL Not found: : $s2")
+                                //  Log.v(TAG, "URL Not found: : $s2")
                                 return false
                             }
                         })
-                        .load(s2) // sample image
+                        .load(s2)
                         .placeholder(android.R.drawable.progress_indeterminate_horizontal) // need placeholder to avoid issue like glide annotations
                         .error(android.R.drawable.stat_notify_error) // need error to avoid issue like glide annotations
                         .submit()
@@ -129,7 +129,6 @@ class CustomMapTileProvider(context: Context) : TileProvider {
             )
             val tileFile = "/$zoom/$x/$y.png"
             file = File(sdcard, tileFile)
-            //   Log.v(TAG, "Fetching in: " + file.path)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.v(TAG, "Tile not found: " + e.message)
