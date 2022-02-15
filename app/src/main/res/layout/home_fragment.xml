@@ -16,7 +16,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/ian_b"
             android:textColor="@color/grey_text_dark"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +25,6 @@
             android:id="@+id/tvRole"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Assistant Superintendent"
             android:textColor="@color/grey_text_dark"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/tvUserName"
@@ -62,8 +60,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_map"
             android:tint="@color/orange"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/ivProperty"
             app:layout_constraintEnd_toStartOf="@+id/guideline1"
             app:layout_constraintHorizontal_bias="0.0"
@@ -86,11 +84,28 @@
             android:layout_margin="16dp"
             android:numColumns="2"
             android:verticalSpacing="10dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/ivMap"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/guideline1"
             app:layout_constraintTop_toTopOf="@+id/ivMap" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_border_grey"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            android:text="@string/start"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvLogout"
@@ -103,8 +118,10 @@
             android:paddingEnd="8dp"
             android:paddingBottom="5dp"
             android:text="@string/logout"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/ivProperty"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.567"
             app:layout_constraintStart_toStartOf="@id/guideline1" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -114,6 +131,7 @@
             android:scaleType="fitXY"
             android:src="@color/green_text"
             android:tint="#97121212"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

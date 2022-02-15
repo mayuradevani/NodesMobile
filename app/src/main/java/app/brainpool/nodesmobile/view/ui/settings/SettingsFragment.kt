@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.SettingsFragmentBinding
@@ -40,21 +40,30 @@ class SettingsFragment : Fragment(R.layout.settings_fragment) {
         }
         return binding.root
     }
+
     private fun loadAboutUs() {
-        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAboutFragment())
+        showFragment(AboutFragment())
+    }
+
+    private fun showFragment(frmt: Fragment) {
+        (activity as MainActivity).fm.beginTransaction()
+            .add(R.id.nav_host_fragment, frmt, "6")
+            .hide((activity as MainActivity).active)
+            .commit()
+        (activity as MainActivity).lastActive = (activity as MainActivity).active
+        (activity as MainActivity).active = frmt
     }
 
     private fun loadIMEIPage() {
-        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToIMEIFragment())
+        showFragment(IMEIFragment())
     }
 
     private fun loadHelp() {
-        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToHelpFragment())
+        showFragment(HelpFragment())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
     }
-
 }

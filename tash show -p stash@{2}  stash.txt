@@ -1,0 +1,65 @@
+[1mdiff --git a/et --soft HEAD^ b/et --soft HEAD^[m
+[1mnew file mode 100644[m
+[1mindex 0000000..81bcf24[m
+[1m--- /dev/null[m
+[1m+++ b/et --soft HEAD^[m	
+[36m@@ -0,0 +1,59 @@[m
+[32m+[m[32m[33mcommit 244a1742ae18ed86d91e65a0efcb3a9e1a25bba0[m[33m ([m[1;36mHEAD -> [m[1;32mandev[m[33m, [m[1;31morigin/andev[m[33m, [m[1;31morigin/HEAD[m[33m)[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Mon Jan 31 14:42:13 2022 +0530[m
+[32m+[m
+[32m+[m[32m    sprint 6 complete[m
+[32m+[m
+[32m+[m[32m[33mcommit 4b778e248a4d914757d18d6b71b7ccf952a51513[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Fri Jan 28 18:47:19 2022 +0530[m
+[32m+[m
+[32m+[m[32m    sprint 6 complete[m
+[32m+[m
+[32m+[m[32m[33mcommit b41875407dfcffe3198239416dc4252d9f34e6cd[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Fri Jan 28 18:38:30 2022 +0530[m
+[32m+[m
+[32m+[m[32m    sprint 6 complete[m
+[32m+[m
+[32m+[m[32m[33mcommit dd9983f9188c4790472b19e3ee430bac09bf31d7[m[33m ([m[1;31mdifferent-repo/andev[m[33m)[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Fri Nov 26 18:30:09 2021 +0530[m
+[32m+[m
+[32m+[m[32m    common function for api calling[m
+[32m+[m
+[32m+[m[32m[33mcommit db6fa2246d0a502debb878c71b552fea94dddc3f[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Fri Nov 19 12:08:27 2021 +0530[m
+[32m+[m
+[32m+[m[32m    maps integrate[m
+[32m+[m
+[32m+[m[32m[33mcommit 1d47e2e48491d95769a9a0f96e74f170744ad629[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Tue Nov 16 13:16:51 2021 +0530[m
+[32m+[m
+[32m+[m[32m    login flow set[m
+[32m+[m
+[32m+[m[32m[33mcommit d3b53782efa38ed5827477bcc91662145247b63e[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Tue Nov 16 12:58:46 2021 +0530[m
+[32m+[m
+[32m+[m[32m    login flow set[m
+[32m+[m
+[32m+[m[32m[33mcommit fd623dd009c95cda258aa0ec2b3f3826ff4c669d[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Tue Nov 16 12:02:50 2021 +0530[m
+[32m+[m
+[32m+[m[32m    login flow set[m
+[32m+[m
+[32m+[m[32m[33mcommit 272f00420ec99f3262e70cfa5a06c4f2c9ea1e06[m[m
+[32m+[m[32mAuthor: Annyjain29 <anita.nagori@brainpooltech.com>[m
+[32m+[m[32mDate:   Mon Nov 15 19:00:30 2021 +0530[m
+[32m+[m
+[32m+[m[32m    login flow set[m
+[32m+[m
+[32m+[m[32m[33mcommit 5254619390a646d10a6c303b3b1b6f1df1931d30[m[m
+[32m+[m[32mAuthor: Annyjain29 <anitanagori29ict@gmail.com>[m
+[32m+[m[32mDate:   Mon Nov 1 15:39:42 2021 +0530[m
+[32m+[m
+[32m+[m[32m    GraphQL integration[m

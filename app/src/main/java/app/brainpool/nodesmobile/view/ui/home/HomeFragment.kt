@@ -11,22 +11,18 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.Splash
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.data.models.HomeListItem
 import app.brainpool.nodesmobile.databinding.HomeFragmentBinding
-import app.brainpool.nodesmobile.util.materialDialog
-import app.brainpool.nodesmobile.util.navigate
-import app.brainpool.nodesmobile.util.navigateClearStack
-import app.brainpool.nodesmobile.util.observeViewState
-import app.brainpool.nodesmobile.view.ui.home.adapter.HomeListAdapter
+import app.brainpool.nodesmobile.util.*
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
-import dubai.business.womencouncil.data.dataSource.DataServer
 
 
 @AndroidEntryPoint
@@ -45,26 +41,22 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 getString(R.string.app_notification_channel_name)
             )
             binding = HomeFragmentBinding.inflate(inflater)
-            binding.tvLogout.setOnClickListener {
-                viewModel.logout(requireContext())
-            }
-
-            binding.ivMap.setOnClickListener {
+            binding.tvStart.setOnClickListener {
+                binding.tvStart.text = getString(R.string.please_wait)
                 goToMain()
             }
+//            binding.tvLogout.setOnClickListener {
+//                viewModel.logout(requireContext())
+//            }
+//            binding.ivMap.setOnClickListener {
+//                goToMain()
+//            }
+//            binding.recyclerView.apply {
+//                hasFixedSize()
+//                layoutManager = GridLayoutManager(context, 2)
+//                adapter = HomeListAdapter(DataServer.getHomeData())
+//            }
 
-            binding.recyclerView.apply {
-                hasFixedSize()
-                layoutManager = GridLayoutManager(context, 2)
-                adapter = HomeListAdapter(DataServer.getHomeData())
-            }
-
-            val locationArray = resources.getStringArray(R.array.location)
-            val adapter = ArrayAdapter(
-                requireContext(),
-                R.layout.item_spinner, locationArray
-            )
-            binding.spinner.adapter = adapter
             viewModel.getUserProfile(requireContext())
             observeLiveData()
             return binding.root
@@ -72,6 +64,11 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
             e.printStackTrace()
         }
         return container
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.tvStart.text = getString(R.string.start)
     }
 
     private fun goToMain() {
@@ -92,15 +89,34 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                         Prefs.putString(PrefsKey.LICENCE_NUMBER_NAME, user?.licensenumber?.name)
                     }
                     Prefs.putString(PrefsKey.IMEI, user?.imei)
+                    Firebase.crashlytics.setUserId(user?.imei.toString())
                     Prefs.putString(PrefsKey.TIME_INTERVAL, user?.timeInterval.toString())
                     Prefs.putString(PrefsKey.RADIUS, user?.radius.toString())
-                    if (!user?.property?.id.isNullOrEmpty()) {
+                    binding.tvUserName.text = user?.firstname + " " + user?.lastname
+                    var role = user?.primaryRole.toString()
+                    if (role == "null")
+                        role = user?.role?.name.toString()
+                    binding.tvRole.text = role
+                    if (user?.property?.id.isNullOrEmpty()) {
+                        materialDialog(getString(R.string.no_property), "", "OK") {
+                            it.dismiss()
+                        }
+                        binding.ivDropdown.gone()
+                        binding.spinner.gone()
+                    } else {
                         Prefs.putString(PrefsKey.PROPERTY_ID, user?.property?.id)
                         Prefs.putString(PrefsKey.USER_ID, user?.id)
                         viewModel.getAllMapsByPropertyId(
                             requireContext(),
                             user?.property?.id.toString()
                         )
+                        val locationArray = mutableListOf<String>()
+                        locationArray.add(user?.property?.name.toString())
+                        val adapter = ArrayAdapter(
+                            requireContext(),
+                            R.layout.item_spinner, locationArray
+                        )
+                        binding.spinner.adapter = adapter
                     }
                 }
             }

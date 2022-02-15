@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NodesMobile</string>
+    <string name="app_name">NODES Mobile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="site_notes">Site Notes</string>
     <string name="validate">validate</string>
@@ -10,7 +10,6 @@
     <string name="the_nodes">The Nodes platform is only available to licensed users with registered email addresses.\n\nIf you did not yet receive an email, please wait a few minutes and check your junk mail, otherwise contact your system administrator</string>
     <string name="please_enter">Please enter your registered Nodes email address to continue</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="ian_b">Ian B</string>
     <string name="record_site_note">Record Site Note</string>
     <string name="tasks">Tasks</string>
     <string name="notifications">Notifications</string>
@@ -64,6 +63,9 @@
     <string name="nodes_device_id">Nodes device Id</string>
     <string name="unable_to_send_token">Unable to send token</string>
     <string name="unable_login">Unable to login</string>
+    <string name="no_property">No Property found on Nodes Web for your account. So you won\'t see MapTiles on map</string>
+    <string name="start">Start</string>
+    <string name="please_wait">Wait..</string>
     <string-array name="location">
         <item>Cypress Lakes, Hunter Valley, NSW</item>
     </string-array>
