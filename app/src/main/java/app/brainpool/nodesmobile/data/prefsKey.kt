@@ -2,7 +2,6 @@ package app.brainpool.nodesmobile.data
 
 object PrefsKey {
     const val UPDATE_MAP = "UPDATE_MAP"
-    const val FIREBASE_TOKEN = "FIREBASE_TOKEN"
     const val MAP_TILE_FOLDER = "MAP_TILE_FOLDER"
     const val MAP_TILE_FILE_NAME = "MAP_TILE_FILE_NAME"
     const val MAP_CENTER_LATI = "MAP_CENTER_LATI"

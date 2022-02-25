@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.HelpFragmentBinding
+import com.alcophony.app.ui.core.BaseFragment
 
-class HelpFragment : Fragment(R.layout.help_fragment) {
+class HelpFragment : BaseFragment(R.layout.help_fragment) {
 
 
     lateinit var binding: HelpFragmentBinding

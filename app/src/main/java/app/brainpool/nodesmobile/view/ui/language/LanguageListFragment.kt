@@ -4,19 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.LanguageListFragmentBinding
 import app.brainpool.nodesmobile.util.gone
-import app.brainpool.nodesmobile.util.observeViewState
 import app.brainpool.nodesmobile.util.visible
 import app.brainpool.nodesmobile.view.adapter.LanguageAdapter
+import com.alcophony.app.ui.core.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class LanguageListFragment : Fragment() {
+class LanguageListFragment : BaseFragment(R.layout.language_list_fragment) {
     lateinit var binding: LanguageListFragmentBinding
     private val languageAdapter by lazy { LanguageAdapter() }
     private val viewModel by viewModels<LanguageViewModel>()

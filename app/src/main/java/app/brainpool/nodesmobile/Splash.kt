@@ -6,6 +6,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.util.navigate
+import app.brainpool.nodesmobile.util.setNightModeOnOff
 import app.brainpool.nodesmobile.view.ui.home.HomeActivity
 import app.brainpool.nodesmobile.view.ui.login.LoginActivity
 import com.pixplicity.easyprefs.library.Prefs
@@ -22,5 +23,6 @@ class Splash : AppCompatActivity() {
             }
             finish()
         }, 3000)
+        setNightModeOnOff(Prefs.getString(PrefsKey.NIGHT_MODE, getString(R.string.auto)))
     }
 }

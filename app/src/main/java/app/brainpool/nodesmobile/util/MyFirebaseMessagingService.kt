@@ -3,7 +3,6 @@ package app.brainpool.nodesmobile.util
 import android.app.NotificationManager
 import android.util.Log
 import androidx.core.content.ContextCompat
-import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.data.PrefsKey
 import com.example.android.eggtimernotifications.util.sendNotification
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -58,21 +57,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-        Prefs.putString(PrefsKey.FIREBASE_TOKEN, token)
+        Prefs.putBoolean(PrefsKey.SENT_TOKEN, false)
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(token)
     }
     // [END on_new_token]
-
-    private fun sendRegistrationToServer(token: String?) {
-        Log.v(TAG, "Token:" + token)
-        if (token != null) {
-            if (Prefs.getString(PrefsKey.USER_ID, "").isNotEmpty())
-                MainActivity.sendTokenToServer(this, token)
-        }
-    }
 
     companion object {
         private const val TAG = "MyFirebaseMsgService"

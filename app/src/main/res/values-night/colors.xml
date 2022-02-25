@@ -5,5 +5,5 @@
     <color name="icon_dark_grey">@color/grey_bg</color>
     <color name="text_dark_grey">@color/grey_bg</color>
     <color name="text_grey_title">@color/grey_bg</color>
-
+    <color name="text_grey_title_disabled">@color/grey_text</color>
 </resources>

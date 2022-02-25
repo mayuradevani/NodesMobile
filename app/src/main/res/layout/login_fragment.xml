@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_bg"
+        android:background="@color/bg_page_grey"
         tools:context=".view.ui.login.LoginEmailFragment">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -48,7 +48,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,8 +58,9 @@
             android:background="@color/white"
             android:gravity="center"
             android:hint="email@brainpooltech.com"
-            android:inputType="textEmailAddress"
             android:padding="10dp"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/black"
             android:textColorHint="@color/grey_hint_color"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -67,13 +68,13 @@
             app:layout_constraintTop_toBottomOf="@+id/tvPleaseEnter"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="38dp"
-            android:text="@string/validate"
             android:background="@drawable/ic_button_orange"
+            android:text="@string/validate"
             android:textColor="@color/grey_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

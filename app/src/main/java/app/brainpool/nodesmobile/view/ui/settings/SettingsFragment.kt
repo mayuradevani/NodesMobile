@@ -5,17 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
+import app.brainpool.nodesmobile.Splash
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.SettingsFragmentBinding
+import app.brainpool.nodesmobile.util.await
+import app.brainpool.nodesmobile.util.materialDialog
+import app.brainpool.nodesmobile.util.navigateClearStack
+import com.alcophony.app.ui.core.BaseFragment
+import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
-class SettingsFragment : Fragment(R.layout.settings_fragment) {
+@AndroidEntryPoint
+class SettingsFragment : BaseFragment(R.layout.settings_fragment) {
 
     lateinit var binding: SettingsFragmentBinding
-    private lateinit var viewModel: SettingsViewModel
+
+    @ExperimentalCoroutinesApi
+    private val viewModel by viewModels<SettingsViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,14 +44,56 @@ class SettingsFragment : Fragment(R.layout.settings_fragment) {
         binding.tvIMEITitleGo.setOnClickListener {
             loadIMEIPage()
         }
-
         binding.tvHelp.setOnClickListener { loadHelp() }
         binding.switchDeviceTracking.setOnCheckedChangeListener(null)
-        binding.switchDeviceTracking.isChecked = Prefs.getBoolean(PrefsKey.DEVICE_TRACKING)
+        binding.switchDeviceTracking.isChecked = Prefs.getBoolean(PrefsKey.DEVICE_TRACKING, true)
         binding.switchDeviceTracking.setOnCheckedChangeListener { buttonView, isChecked ->
             Prefs.putBoolean(PrefsKey.DEVICE_TRACKING, isChecked)
         }
+        binding.tvLogout.setOnClickListener {
+            materialDialog(
+                getString(R.string.do_you_want_to_logout),
+                "",
+                getString(R.string.yes),
+                {
+                    viewModel.logout(requireContext())
+                }, getString(R.string.no), { it.dismiss() })
+        }
+        binding.tvNightModeVal.text = Prefs.getString(PrefsKey.NIGHT_MODE, getString(R.string.auto))
+        binding.tvNightMode.setOnClickListener {
+            loadNightMode()
+        }
+        binding.tvNightModeVal.setOnClickListener {
+            loadNightMode()
+        }
+        observeLiveData()
         return binding.root
+    }
+
+    private fun observeLiveData() {
+        observeViewState(viewModel.logout, binding.fetchProgress) { response ->
+            if (response?.data?.logoutUserData?.success == true) {
+                try {
+                    viewLifecycleOwner
+                        .lifecycleScope
+                        .launch {
+                            FirebaseMessaging.getInstance().deleteToken().await()
+                            Prefs.clear()
+//                            if (isAdded && isVisible) {
+                            requireActivity().navigateClearStack<Splash>()
+                            activity?.finish()
+//                            }
+                        }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun loadNightMode() {
+        showFragment(SettingNightModeFragment())
     }
 
     private fun loadAboutUs() {
@@ -62,8 +117,4 @@ class SettingsFragment : Fragment(R.layout.settings_fragment) {
         showFragment(HelpFragment())
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
-    }
 }

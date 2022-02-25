@@ -7,6 +7,7 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.firebase.crashlytics'
     id 'com.google.gms.google-services'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -105,6 +106,8 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:$legacy_support_v4_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_compiler_version"
+
+    implementation 'com.tapadoo.android:alerter:5.1.2'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

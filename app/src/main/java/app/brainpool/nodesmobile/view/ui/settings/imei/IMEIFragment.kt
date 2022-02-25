@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.ImeiFragmentBinding
+import com.alcophony.app.ui.core.BaseFragment
 import com.pixplicity.easyprefs.library.Prefs
 
-class IMEIFragment : Fragment(R.layout.imei_fragment) {
+class IMEIFragment : BaseFragment(R.layout.imei_fragment) {
 
     lateinit var binding: ImeiFragmentBinding
     private lateinit var viewModel: AboutViewModel

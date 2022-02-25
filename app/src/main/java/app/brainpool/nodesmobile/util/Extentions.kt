@@ -8,10 +8,14 @@ import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.util.GlobalVar.TAG
 import app.brainpool.nodesmobile.view.state.ViewState
@@ -20,11 +24,16 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.apollographql.apollo.exception.ApolloException
 import com.bumptech.glide.Glide
+import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tapadoo.alerter.Alerter
+import com.tapadoo.alerter.OnHideAlertListener
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -38,27 +47,48 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) =
-    liveData.observe(this, androidx.lifecycle.Observer(body))
+//fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) =
+//    liveData.observe(this, androidx.lifecycle.Observer(body))
+//
+//fun <T : Any, L : LiveData<ViewState<T>>> LifecycleOwner.observeViewState(
+//    liveData: L,
+//    loader: View? = null,
+//    body: (T?) -> Unit
+//) {
+//    this.observe(liveData) {
+//        when (it) {
+//            is ViewState.Loading -> {
+//                loader?.visible()
+//            }
+//            is ViewState.Error -> {
+//                loader?.gone()
+//            }
+//            is ViewState.Success -> {
+//                body.invoke(it.value)
+//                loader?.gone()
+//            }
+//        }
+//    }
+//}
 
-fun <T : Any, L : LiveData<ViewState<T>>> LifecycleOwner.observeViewState(
-    liveData: L,
-    loader: View? = null,
-    body: (T?) -> Unit
-) {
-    this.observe(liveData) {
-        when (it) {
-            is ViewState.Loading -> {
-                loader?.gone()
-            }
-            is ViewState.Error -> {
-                loader?.gone()
-            }
-            is ViewState.Success -> {
-                body.invoke(it.value)
-                loader?.gone()
-            }
+suspend fun <T> Task<T>.await(): T? = suspendCoroutine { continuetion ->
+    this.addOnCompleteListener {
+        if (it.isSuccessful) {
+            continuetion.resume(it.result)
+        } else {
+            continuetion.resume(null)
         }
+
+    }
+}
+
+fun Activity.setNightModeOnOff(s: String) {
+    if (s == "On") {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    } else if (s == "Off") {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    } else {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 }
 
@@ -82,6 +112,45 @@ fun <T> ViewModel.doInBackground(
             liveData.postValue(ViewState.Error(e.message))
         }
     }
+}
+
+fun Fragment.showAlert(message: String, title: String? = null, callback: (() -> Unit)? = null) {
+    val alert = Alerter.create(requireActivity())
+        .setText(message)
+        .setBackgroundColorRes(R.color.grey_dark)
+        .setTitle(title.orEmpty())
+        .enableInfiniteDuration(false)
+        .enableSwipeToDismiss()
+
+    if (callback != null) {
+        alert.setOnHideListener(OnHideAlertListener { callback.invoke() })
+    }
+
+    alert.show()
+
+}
+
+fun Fragment.showProgressAlert(
+    @StringRes message: Int = R.string.please_wait,
+    title: String? = null,
+    callback: (() -> Unit)? = null
+): Alerter {
+    val alert = Alerter.create(requireActivity())
+        .setText(message)
+        .enableProgress(true)
+        .setBackgroundColorRes(R.color.tr_grey_bg)
+        .setTitle(title.orEmpty())
+        .enableInfiniteDuration(false)
+        .disableOutsideTouch()
+
+    if (callback != null) {
+        alert.setOnHideListener(OnHideAlertListener { callback.invoke() })
+    }
+
+    alert.show()
+
+    return alert
+
 }
 
 fun ImageView.loadImage(filePath: String, placeHolder: Int? = null) {

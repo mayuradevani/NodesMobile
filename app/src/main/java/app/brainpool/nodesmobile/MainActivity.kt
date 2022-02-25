@@ -1,20 +1,13 @@
 package app.brainpool.nodesmobile
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.MainBinding
 import app.brainpool.nodesmobile.util.GlobalVar
-import app.brainpool.nodesmobile.util.GlobalVar.TAG
-import app.brainpool.nodesmobile.util.gone
-import app.brainpool.nodesmobile.util.observeViewState
-import app.brainpool.nodesmobile.view.ui.MainViewModel
 import app.brainpool.nodesmobile.view.ui.map.MapFragment
 import app.brainpool.nodesmobile.view.ui.notifications.NotificationsFragment
 import app.brainpool.nodesmobile.view.ui.settings.SettingsFragment
@@ -23,7 +16,6 @@ import app.brainpool.nodesmobile.view.ui.tasks.TasksFragment
 import com.google.android.material.navigation.NavigationBarView
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @AndroidEntryPoint
@@ -43,11 +35,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         try {
             // Obtain the FirebaseAnalytics instance.
-
-            viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
             binding = MainBinding.inflate(layoutInflater)
             val view = binding.root
             setContentView(view)
+
             /*This is used for map update notification received from server*/
             if (!intent.getStringExtra(GlobalVar.EXTRA_FILE_NAME)
                     .isNullOrEmpty()
@@ -59,11 +50,11 @@ class MainActivity : AppCompatActivity() {
                 )
             }
 
-            if (!Prefs.getBoolean(PrefsKey.SENT_TOKEN, false))
-                sendTokenToServer(this, Prefs.getString(PrefsKey.FIREBASE_TOKEN, ""))
-
             binding.ivSetting.setOnClickListener {
-                if (active is SettingsFragment) {
+                if (lastActive is SettingsFragment) {
+                    onBackPressed()
+                    onBackPressed()
+                } else if (active is SettingsFragment) {
                     fm.beginTransaction().hide(active).show(lastActive).commit()
                     active = lastActive
                     lastActive = Fragment()
@@ -95,7 +86,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        observeLiveData()
     }
 
     private val mOnNavigationItemSelectedListener =
@@ -137,26 +127,6 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigation.selectedItemId = R.id.mapFragment
     }
 
-    private fun observeLiveData() {
-        observeViewState(viewModel.main, binding.fetchProgress) { response ->
-            if (response != null) {
-                if (response.data != null) {
-                    Prefs.putBoolean(PrefsKey.SENT_TOKEN, true)
-                    Log.v(TAG, "Token sent:" + response.data)
-                }
-                binding.fetchProgress.gone()
-            }
-        }
-    }
-
-    companion object {
-        @ExperimentalCoroutinesApi
-        lateinit var viewModel: MainViewModel
-        fun sendTokenToServer(context: Context, s: String) {
-            if (this::viewModel.isInitialized)
-                viewModel.sendToken(context, s)
-        }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

@@ -5,13 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.brainpool.nodesmobile.GetAllMapsByPropertyIdQuery
-import app.brainpool.nodesmobile.GetUserProfileQuery
-import app.brainpool.nodesmobile.LogoutUserDataQuery
+import app.brainpool.nodesmobile.*
 import app.brainpool.nodesmobile.Repository.NodesMobRepository
+import app.brainpool.nodesmobile.data.PrefsKey
+import app.brainpool.nodesmobile.type.NotificationDeviceType
+import app.brainpool.nodesmobile.type.NotificationInput
 import app.brainpool.nodesmobile.util.doInBackground
 import app.brainpool.nodesmobile.view.state.ViewState
 import com.apollographql.apollo.api.Response
+import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -47,15 +49,35 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val _logout by lazy {
-        MutableLiveData<ViewState<Response<LogoutUserDataQuery.Data>>>()
+    private val _getAllProperties by lazy {
+        MutableLiveData<ViewState<Response<GetAllPropertiesQuery.Data>>>()
     }
-    val logout: LiveData<ViewState<Response<LogoutUserDataQuery.Data>>>
-        get() = _logout
+    val getAllProperties: LiveData<ViewState<Response<GetAllPropertiesQuery.Data>>>
+        get() = _getAllProperties
 
-    fun logout(context: Context) = viewModelScope.launch {
-        doInBackground(_logout, "Unable to Logout") {
-            repository.logout(context)
+    fun getAllProperties(context: Context) = viewModelScope.launch {
+        doInBackground(_getAllProperties, "Unable to get properties") {
+            repository.getAllProperties(context)
+        }
+    }
+
+    private val _main by lazy {
+        MutableLiveData<ViewState<Response<UpdateOrStoreNotificationTokenMutation.Data>>>()
+    }
+    val main: LiveData<ViewState<Response<UpdateOrStoreNotificationTokenMutation.Data>>>
+        get() = _main
+
+    fun sendToken(context: Context, token: String) = viewModelScope.launch {
+        doInBackground(_main, context.getString(R.string.unable_to_send_token)) {
+            repository.updateOrStoreNotificationToken(
+                context,
+                data =
+                NotificationInput(
+                    Prefs.getString(PrefsKey.USER_ID),
+                    NotificationDeviceType.MOBILE,
+                    token
+                )
+            )
         }
     }
 }

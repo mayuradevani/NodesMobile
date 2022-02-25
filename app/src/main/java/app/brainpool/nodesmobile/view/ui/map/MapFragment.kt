@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
@@ -26,6 +25,7 @@ import app.brainpool.nodesmobile.databinding.MapFragmentBinding
 import app.brainpool.nodesmobile.type.LatLongInput
 import app.brainpool.nodesmobile.util.*
 import app.brainpool.nodesmobile.util.GlobalVar.TAG
+import com.alcophony.app.ui.core.BaseFragment
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -45,9 +45,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.io.File
 
-
 @AndroidEntryPoint
-class MapFragment : Fragment(R.layout.map_fragment),
+class MapFragment : BaseFragment(R.layout.map_fragment),
     OnMapReadyCallback {
 
     lateinit var binding: MapFragmentBinding
@@ -58,7 +57,7 @@ class MapFragment : Fragment(R.layout.map_fragment),
 
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var lastLocation: Location
+    private lateinit var lastLocationSent: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     var locationUpdateState = false
@@ -89,20 +88,25 @@ class MapFragment : Fragment(R.layout.map_fragment),
                         TAG,
                         "Last Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
                     )
-                    if (Prefs.getBoolean(PrefsKey.DEVICE_TRACKING)) {
+                    if (Prefs.getBoolean(PrefsKey.DEVICE_TRACKING, true)) {
+                        if (!::lastLocationSent.isInitialized)
+                            lastLocationSent = p0.lastLocation
                         val results = FloatArray(1)
                         Location.distanceBetween(
-                            lastLocation.latitude, lastLocation.longitude,
+                            lastLocationSent.latitude, lastLocationSent.longitude,
                             p0.lastLocation.latitude, p0.lastLocation.longitude, results
                         )
-//                        if (results.get(0) >= Prefs.getString(PrefsKey.RADIUS).toInt()) {
-                            lastLocation = p0.lastLocation
+                        if (results.get(0) >= Prefs.getString(PrefsKey.RADIUS).toInt()) {
                             Log.v(
                                 TAG,
-                                "Tracking Location: ${lastLocation.latitude} and ${lastLocation.longitude}"
+                                "Tracking Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
                             )
-                            createTrackerPositionData(lastLocation.latitude, lastLocation.longitude)
-//                        }
+                            createTrackerPositionData(
+                                p0.lastLocation.latitude,
+                                p0.lastLocation.longitude
+                            )
+                            lastLocationSent = p0.lastLocation
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -134,15 +138,16 @@ class MapFragment : Fragment(R.layout.map_fragment),
             (activity as MainActivity).binding.bottomNavigation.selectedItemId =
                 R.id.siteNotesFragment
         }
-        if (Prefs.getString(PrefsKey.MAP_TYPE, "") == "")
-            Prefs.putString(PrefsKey.MAP_TYPE, getString(R.string.device))
         setTextAndColor()
         binding.tvMapType.setOnClickListener {
             showMaptiles()
         }
         binding.ivUpDown.setOnClickListener { binding.tvMapType.performClick() }
         if (Prefs.getBoolean(PrefsKey.UPDATE_MAP) //This is used for map update notification received from server
-            || Prefs.getString(PrefsKey.DEFAULT_MAP,getString(R.string.newest)) == getString(R.string.newest)//This is used for map update settings
+            || Prefs.getString(
+                PrefsKey.DEFAULT_MAP,
+                getString(R.string.newest)
+            ) == getString(R.string.newest)//This is used for map update settings
 //            || (Prefs.getString(PrefsKey.DATA_USAGE)
 //                .equals(getString(R.string.wifiOnly)) && context?.isWifiNetworkConnected() == true)//This is used for wifi/data usage settings
         ) {
@@ -302,35 +307,44 @@ class MapFragment : Fragment(R.layout.map_fragment),
 
     private fun observeLiveData() {
         observeViewState(viewModel.downloadMaps) { response ->
-            if (response != null) {
-                if (response?.data == null) {
-                    materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
-                        it.dismiss()
-                    }
-                } else {
-                    val mapTileList = response?.data?.downloadMaps
-                    if (mapTileList != null) {
-                        val count = getAllImageFilesInAllFolder(mapDir)
-                        Log.v(TAG, "Total Images: $count")
-                        if (mapTileList.size != count) {
-                            Log.v(TAG, "Downloading Map tiles")
-                            for (p in mapTileList) {
-                                var fName = p?.link.toString()
-                                fName = fName.substring(fName.indexOf("maptiles/") + 9)
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    saveImage(
-                                        Glide.with(requireContext())
-                                            .asBitmap()
-                                            .load(p?.link.toString()) // sample image
-                                            .submit()
-                                            .get(), fName
-                                    )
+            try {
+                if (response != null) {
+                    if (response?.data == null) {
+                        materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
+                            it.dismiss()
+                        }
+                    } else {
+                        val mapTileList = response?.data?.downloadMaps
+                        if (mapTileList != null) {
+                            val count = getAllImageFilesInAllFolder(mapDir)
+                            Log.v(TAG, "Total Images: $count")
+                            if (mapTileList.size != count) {
+                                Log.v(TAG, "Downloading Map tiles")
+                                for (p in mapTileList) {
+                                    var fName = p?.link.toString()
+                                    fName = fName.substring(fName.indexOf("maptiles/") + 9)
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        try {
+                                            saveImage(
+                                                Glide.with(requireContext())
+                                                    .asBitmap()
+                                                    .load(p?.link.toString()) // sample image
+                                                    .submit()
+                                                    .get(), fName
+                                            )
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                            Log.v(TAG, "Error:$fName")
+                                        }
+                                    }
                                 }
+                                Log.v(TAG, "Downloading Map tiles complete")
                             }
-                            Log.v(TAG, "Downloading Map tiles complete")
                         }
                     }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
         observeViewState(viewModel.tracker) { response ->
@@ -394,6 +408,7 @@ class MapFragment : Fragment(R.layout.map_fragment),
     override fun onMapReady(map: GoogleMap) {
         if (!this::googleMap.isInitialized) {
             googleMap = map
+            googleMap.isMyLocationEnabled = true
             googleMap.uiSettings.isZoomControlsEnabled = true
             googleMap.setMaxZoomPreference(MaximumZoom)
             googleMap.setMinZoomPreference(MinimumZoom)
@@ -408,15 +423,20 @@ class MapFragment : Fragment(R.layout.map_fragment),
                     )
                 )
             )!!
+//            var centerLatLong = LatLng(
+//                Prefs.getDouble(PrefsKey.MAP_CENTER_LATI),
+//                Prefs.getDouble(PrefsKey.MAP_CENTER_LONGI)
+//            )
+//            placeMarkerOnMap(centerLatLong, MaximumZoom)
+            overlay?.isVisible = Prefs.getString(PrefsKey.MAP_TYPE) != getString(R.string.device)
 
-            googleMap.isMyLocationEnabled = true
             activity?.let {
                 fusedLocationClient.lastLocation.addOnSuccessListener(it) { location ->
                     if (location != null) {
-                        lastLocation = location
-                        centerLatLong = LatLng(lastLocation.latitude, lastLocation.longitude)
+                        centerLatLong = LatLng(location.latitude, location.longitude)
+                        lastLocationSent = location
                     }
-                    googleMap.animateCamera(
+                    googleMap.moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             centerLatLong,
                             MaximumZoom
@@ -426,4 +446,11 @@ class MapFragment : Fragment(R.layout.map_fragment),
             }
         }
     }
+
+//    private fun placeMarkerOnMap(location: LatLng, zoomLevel: Float) {
+//        val markerOptions = MarkerOptions().position(location)
+//        googleMap.addMarker(markerOptions)
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel))
+//    }
+
 }

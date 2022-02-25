@@ -5,31 +5,33 @@ import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import app.brainpool.nodesmobile.GetAllPropertiesQuery
 import app.brainpool.nodesmobile.MainActivity
 import app.brainpool.nodesmobile.R
-import app.brainpool.nodesmobile.Splash
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.data.models.HomeListItem
 import app.brainpool.nodesmobile.databinding.HomeFragmentBinding
 import app.brainpool.nodesmobile.util.*
+import com.alcophony.app.ui.core.BaseFragment
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.home_fragment) {
-
+class HomeFragment : BaseFragment(R.layout.home_fragment) {
     lateinit var binding: HomeFragmentBinding
     private val viewModel by viewModels<HomeViewModel>()
+    var proprtyList: List<GetAllPropertiesQuery.GetAllProperty?>? = null
+    var pIdLastSelected: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,13 +43,11 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 getString(R.string.app_notification_channel_name)
             )
             binding = HomeFragmentBinding.inflate(inflater)
-            binding.tvStart.setOnClickListener {
-                binding.tvStart.text = getString(R.string.please_wait)
+            binding.btnStart.setOnClickListener {
+                binding.btnStart.text = getString(R.string.please_wait)
                 goToMain()
             }
-//            binding.tvLogout.setOnClickListener {
-//                viewModel.logout(requireContext())
-//            }
+
 //            binding.ivMap.setOnClickListener {
 //                goToMain()
 //            }
@@ -56,8 +56,30 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 //                layoutManager = GridLayoutManager(context, 2)
 //                adapter = HomeListAdapter(DataServer.getHomeData())
 //            }
+            binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
 
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val p: GetAllPropertiesQuery.GetAllProperty? = proprtyList?.get(position)
+//                    Prefs.putString(PrefsKey.PROPERTY_ID, p?.id)
+                    viewModel.getAllMapsByPropertyId(
+                        requireContext(),
+                        p?.id.toString()
+                    )
+                }
+            }
+            if (!Prefs.getBoolean(PrefsKey.SENT_TOKEN, false)) {
+                setPushNotificationToken()
+            }
             viewModel.getUserProfile(requireContext())
+            viewModel.getAllProperties(requireContext())
+            binding.btnStart.gone()
             observeLiveData()
             return binding.root
         } catch (e: Exception) {
@@ -66,9 +88,16 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         return container
     }
 
+    private fun setPushNotificationToken() {
+        FirebaseMessaging.getInstance()
+            .token.addOnSuccessListener {
+                viewModel.sendToken(requireContext(), it)
+            }
+    }
+
     override fun onResume() {
         super.onResume()
-        binding.tvStart.text = getString(R.string.start)
+        binding.btnStart.text = getString(R.string.log_in)
     }
 
     private fun goToMain() {
@@ -76,7 +105,16 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
     }
 
     private fun observeLiveData() {
-        observeViewState(viewModel.userProfile) { response ->
+        observeViewState(viewModel.main, binding.fetchProgress) { response ->
+            if (response != null) {
+                if (response.data != null) {
+                    Prefs.putBoolean(PrefsKey.SENT_TOKEN, true)
+                    Log.v(GlobalVar.TAG, "Token sent:" + response.data)
+                }
+                binding.fetchProgress.gone()
+            }
+        }
+        observeViewState(viewModel.userProfile, binding.fetchProgress) { response ->
             if (response != null) {
                 if (response?.data == null) {
                     materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
@@ -92,48 +130,50 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                     Firebase.crashlytics.setUserId(user?.imei.toString())
                     Prefs.putString(PrefsKey.TIME_INTERVAL, user?.timeInterval.toString())
                     Prefs.putString(PrefsKey.RADIUS, user?.radius.toString())
+                    Prefs.putString(PrefsKey.USER_ID, user?.id)
                     binding.tvUserName.text = user?.firstname + " " + user?.lastname
                     var role = user?.primaryRole.toString()
                     if (role == "null")
                         role = user?.role?.name.toString()
                     binding.tvRole.text = role
-                    if (user?.property?.id.isNullOrEmpty()) {
+                    pIdLastSelected = user?.property?.id
+                }
+            }
+        }
+        observeViewState(viewModel.getAllProperties, binding.fetchProgress) { response ->
+            if (response != null) {
+                if (response?.data == null) {
+                    materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
+                        it.dismiss()
+                    }
+                } else {
+                    proprtyList = response?.data?.getAllProperties
+                    if (proprtyList != null) {
+                        val locationArray = mutableListOf<String>()
+                        var itemClick = 0
+                        for ((i, p) in proprtyList!!.withIndex()) {
+                            locationArray.add(p?.name.toString())
+                            if (pIdLastSelected == p?.id)
+                                itemClick = i
+                        }
+                        val adapter = ArrayAdapter(
+                            requireContext(),
+                            R.layout.item_spinner, locationArray
+                        )
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        binding.spinner.adapter = adapter
+                        binding.spinner.setSelection(itemClick, false)
+                    } else {
                         materialDialog(getString(R.string.no_property), "", "OK") {
                             it.dismiss()
                         }
                         binding.ivDropdown.gone()
                         binding.spinner.gone()
-                    } else {
-                        Prefs.putString(PrefsKey.PROPERTY_ID, user?.property?.id)
-                        Prefs.putString(PrefsKey.USER_ID, user?.id)
-                        viewModel.getAllMapsByPropertyId(
-                            requireContext(),
-                            user?.property?.id.toString()
-                        )
-                        val locationArray = mutableListOf<String>()
-                        locationArray.add(user?.property?.name.toString())
-                        val adapter = ArrayAdapter(
-                            requireContext(),
-                            R.layout.item_spinner, locationArray
-                        )
-                        binding.spinner.adapter = adapter
                     }
                 }
             }
         }
-        observeViewState(viewModel.logout) { response ->
-            if (response?.data?.logoutUserData?.success == true) {
-                try {
-                    FirebaseMessaging.getInstance().deleteToken()
-                    Prefs.clear()
-                    activity?.finish()
-                    activity?.navigateClearStack<Splash>()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-        observeViewState(viewModel.getAllMapsByPropertyId) { response ->
+        observeViewState(viewModel.getAllMapsByPropertyId, binding.fetchProgress) { response ->
             if (response != null) {
                 if (response?.data == null) {
                     materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
@@ -149,9 +189,16 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                                         PrefsKey.MAP_TILE_FILE_NAME,
                                         p.mapTileFile?.filename
                                     )
+                                    var folder = ""
+                                    if (p.mapTileFile?.filename?.contains(".jpg") == true)
+                                        folder = p.mapTileFile?.filename?.split(".jpg")?.get(0)
+                                    else
+                                        folder = p.mapTileFile?.filename?.split(".tiff")?.get(0)
+                                            .toString()
+
                                     Prefs.putString(
                                         PrefsKey.MAP_TILE_FOLDER,
-                                        p.mapTileFile?.filename?.split(".jpg")?.get(0)
+                                        folder
                                     )
 
                                     //center
@@ -183,7 +230,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                                         PrefsKey.MAP_NORTHEAST_LONGI,
                                         p.center?.coordinates?.get(0)!!
                                     )
-
+                                    binding.btnStart.visible()
                                 }
                             }
                         }

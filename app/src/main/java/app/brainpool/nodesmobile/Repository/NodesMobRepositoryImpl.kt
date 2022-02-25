@@ -5,7 +5,6 @@ import app.brainpool.nodesmobile.*
 import app.brainpool.nodesmobile.networking.NodesMobileApi
 import app.brainpool.nodesmobile.type.NotificationInput
 import app.brainpool.nodesmobile.type.TrackerPositionInput
-import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.coroutines.await
 import javax.inject.Inject
@@ -20,11 +19,10 @@ class NodesMobRepositoryImpl @Inject constructor(
 
 
     override suspend fun getAllProperties(
-        context: Context,
-        isArchive: Input<Boolean>
+        context: Context
     ): Response<GetAllPropertiesQuery.Data> {
         return webService.getApolloClient(context)
-            .query(GetAllPropertiesQuery(isArchive = isArchive))
+            .query(GetAllPropertiesQuery())
             .await()
     }
 

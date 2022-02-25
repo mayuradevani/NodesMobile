@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.TasksFragmentBinding
 import app.brainpool.nodesmobile.view.ui.home.HomeViewModel
+import com.alcophony.app.ui.core.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TasksFragment : Fragment(R.layout.tasks_fragment) {
+class TasksFragment : BaseFragment(R.layout.tasks_fragment) {
 
     lateinit var binding: TasksFragmentBinding
     private lateinit var viewModel: HomeViewModel

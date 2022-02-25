@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.LoginFragmentBinding
 import app.brainpool.nodesmobile.util.gone
 import app.brainpool.nodesmobile.util.materialDialog
-import app.brainpool.nodesmobile.util.observeViewState
+import com.alcophony.app.ui.core.BaseFragment
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.login_fragment) {
+class LoginFragment : BaseFragment(R.layout.login_fragment) {
 
     lateinit var viewModel: LoginViewModel
     lateinit var binding: LoginFragmentBinding
