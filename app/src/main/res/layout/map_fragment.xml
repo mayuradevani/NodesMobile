@@ -12,8 +12,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clHeader"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
+            android:minHeight="60dp"
             android:padding="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -22,7 +23,8 @@
                 android:id="@+id/tvMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:text="@string/map"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -33,7 +35,8 @@
                 android:id="@+id/tvMapType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:text="@string/device"
                 android:textColor="@color/grey_text"
                 android:textSize="18sp"
@@ -80,7 +83,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ivProperty"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
             android:src="@color/tr_grey_bg"
             app:layout_constraintBottom_toBottomOf="parent">
 

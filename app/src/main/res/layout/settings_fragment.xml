@@ -16,7 +16,8 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvSettings"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                 android:layout_height="wrap_content"
+            android:minHeight="60dp"
                 android:background="@color/grey_bg"
                 android:gravity="center"
                 android:text="@string/settings"

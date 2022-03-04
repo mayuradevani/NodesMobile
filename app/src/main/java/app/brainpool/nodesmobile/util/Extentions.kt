@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.os.Build
 import android.os.Parcelable
 import android.util.Log
 import android.view.View
@@ -34,6 +37,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -82,7 +86,7 @@ suspend fun <T> Task<T>.await(): T? = suspendCoroutine { continuetion ->
     }
 }
 
-fun Activity.setNightModeOnOff(s: String) {
+fun setNightModeOnOff(s: String) {
     if (s == "On") {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     } else if (s == "Off") {
@@ -94,6 +98,31 @@ fun Activity.setNightModeOnOff(s: String) {
 
 inline fun <reified T : Activity> Context.navigate() {
     startActivity(Intent(this, T::class.java))
+}
+
+fun setupTheme(context: Context, theme: String): Context {
+    var context: Context = context
+    val res: Resources = context.getResources()
+    var mode: Int = res.getConfiguration().uiMode
+    when (theme) {
+        context.getString(R.string.on) -> {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            mode = Configuration.UI_MODE_NIGHT_YES
+        }
+        context.getString(R.string.off) -> {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            mode = Configuration.UI_MODE_NIGHT_NO
+        }
+        else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+    }
+    val config = Configuration(res.getConfiguration())
+    config.uiMode = mode
+    if (Build.VERSION.SDK_INT >= 17) {
+        context = context.createConfigurationContext(config)
+    } else {
+        res.updateConfiguration(config, res.getDisplayMetrics())
+    }
+    return context
 }
 
 fun <T> ViewModel.doInBackground(

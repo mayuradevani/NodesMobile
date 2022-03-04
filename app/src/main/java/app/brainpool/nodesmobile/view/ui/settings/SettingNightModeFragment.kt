@@ -4,24 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.SettingNightModeFragmentBinding
 import app.brainpool.nodesmobile.util.gone
-import app.brainpool.nodesmobile.util.materialDialog
+import app.brainpool.nodesmobile.util.setupTheme
 import app.brainpool.nodesmobile.util.visible
 import com.alcophony.app.ui.core.BaseFragment
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragment) {
 
     val strAuto = context?.getString(R.string.automatic_text)
     lateinit var binding: SettingNightModeFragmentBinding
-    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,58 +32,46 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
         setCheck(Prefs.getString(PrefsKey.NIGHT_MODE, getString(R.string.auto)))
         binding.tvOn.setOnClickListener {
             try {
-                materialDialog(
-                    getString(R.string.do_you_want_night_mode_on),
-                    "",
-                    getString(R.string.yes),
-                    {
-                        Prefs.putString(PrefsKey.NIGHT_MODE, getString(R.string.on))
-                        Prefs.putString(PrefsKey.NIGHT_MODE_STRING, getString(R.string.on_text))
-                        setCheck("On")
-                        it.dismiss()
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    },
-                    getString(R.string.no),
-                    { it.dismiss() })
+                if (Prefs.getString(PrefsKey.NIGHT_MODE) != getString(R.string.on)) {
+                    Prefs.putString(PrefsKey.NIGHT_MODE, getString(R.string.on))
+                    Prefs.putString(PrefsKey.NIGHT_MODE_STRING, getString(R.string.on_text))
+                    setCheck("On")
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    context?.let { it1 -> setupTheme(it1, Prefs.getString(PrefsKey.NIGHT_MODE)) }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
         binding.tvOff.setOnClickListener {
             try {
-                materialDialog(
-                    getString(R.string.do_you_want_night_mode_off),
-                    "",
-                    getString(R.string.yes),
-                    {
-                        Prefs.putString(PrefsKey.NIGHT_MODE, getString(R.string.off))
-                        Prefs.putString(PrefsKey.NIGHT_MODE_STRING, getString(R.string.off_text))
-                        setCheck("Off")
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    },
-                    getString(R.string.no),
-                    { it.dismiss() })
+                if (Prefs.getString(PrefsKey.NIGHT_MODE) != getString(R.string.off)) {
+                    Prefs.putString(PrefsKey.NIGHT_MODE, getString(R.string.off))
+                    Prefs.putString(
+                        PrefsKey.NIGHT_MODE_STRING,
+                        getString(R.string.off_text)
+                    )
+                    setCheck("Off")
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    context?.let { it1 -> setupTheme(it1, Prefs.getString(PrefsKey.NIGHT_MODE)) }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
         binding.tvAuto.setOnClickListener {
             try {
-                materialDialog(
-                    getString(R.string.do_you_want_night_mode_auto),
-                    "",
-                    getString(R.string.yes),
-                    {
-                        Prefs.putString(PrefsKey.NIGHT_MODE, getString(R.string.auto))
-                        Prefs.putString(
-                            PrefsKey.NIGHT_MODE_STRING,
-                            strAuto
-                        )
-                        setCheck("Auto")
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    },
-                    getString(R.string.no),
-                    { it.dismiss() })
+                if (Prefs.getString(PrefsKey.NIGHT_MODE) != getString(R.string.auto)) {
+                    Prefs.putString(PrefsKey.NIGHT_MODE, getString(R.string.auto))
+                    Prefs.putString(
+                        PrefsKey.NIGHT_MODE_STRING,
+                        strAuto
+                    )
+                    setCheck("Auto")
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    context?.let { it1 -> setupTheme(it1, Prefs.getString(PrefsKey.NIGHT_MODE)) }
+                }
+
 //            try {
 //                var nightMOde = "Auto"
 //                val isNightTheme =
@@ -108,7 +94,6 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
 //            } catch (e: Exception) {
 //                e.printStackTrace()
 //            }
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -136,11 +121,6 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
                 strAuto
             )
         )
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
     }
 
 }

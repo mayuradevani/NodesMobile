@@ -78,14 +78,18 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
     }
 
     private suspend fun logOut() {
-        if (!isLogout) {
-            isLogout = true
-            FirebaseMessaging.getInstance().deleteToken().await()
-            Prefs.clear()
-            if (isAdded && isVisible) {
-                activity?.navigateClearStack<Splash>()
-                activity?.finish()
+        try {
+            if (!isLogout) {
+                isLogout = true
+                FirebaseMessaging.getInstance().deleteToken().await()
+                Prefs.clear()
+                if (isAdded && isVisible) {
+                    activity?.navigateClearStack<Splash>()
+                    activity?.finish()
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

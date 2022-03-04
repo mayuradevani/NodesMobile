@@ -1,5 +1,6 @@
 package app.brainpool.nodesmobile
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,8 @@ import androidx.fragment.app.FragmentManager
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.MainBinding
 import app.brainpool.nodesmobile.util.GlobalVar
+import app.brainpool.nodesmobile.util.setNightModeOnOff
+import app.brainpool.nodesmobile.util.setupTheme
 import app.brainpool.nodesmobile.view.ui.map.MapFragment
 import app.brainpool.nodesmobile.view.ui.notifications.NotificationsFragment
 import app.brainpool.nodesmobile.view.ui.settings.SettingsFragment
@@ -86,6 +89,15 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun attachBaseContext(base: Context) {
+        if (Prefs.getString(PrefsKey.NIGHT_MODE, "") == "")
+            Prefs.putString(PrefsKey.NIGHT_MODE, base.getString(R.string.auto))
+        setNightModeOnOff(Prefs.getString(PrefsKey.NIGHT_MODE))
+
+        val context: Context = setupTheme(base, Prefs.getString(PrefsKey.NIGHT_MODE))
+        super.attachBaseContext(context)
     }
 
     private val mOnNavigationItemSelectedListener =

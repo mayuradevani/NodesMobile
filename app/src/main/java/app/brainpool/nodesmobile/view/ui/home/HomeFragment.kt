@@ -68,18 +68,28 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                 ) {
                     val p: GetAllPropertiesQuery.GetAllProperty? = proprtyList?.get(position)
 //                    Prefs.putString(PrefsKey.PROPERTY_ID, p?.id)
-                    viewModel.getAllMapsByPropertyId(
-                        requireContext(),
-                        p?.id.toString()
-                    )
+                    if (WifiService.instance.isOnline())
+                        viewModel.getAllMapsByPropertyId(
+                            requireContext(),
+                            p?.id.toString()
+                        )
                 }
             }
             if (!Prefs.getBoolean(PrefsKey.SENT_TOKEN, false)) {
                 setPushNotificationToken()
             }
-            viewModel.getUserProfile(requireContext())
-            viewModel.getAllProperties(requireContext())
-            binding.btnStart.gone()
+            if (WifiService.instance.isOnline()) {
+                viewModel.getUserProfile(requireContext())
+                viewModel.getAllProperties(requireContext())
+                binding.btnStart.gone()
+            } else {
+                binding.tvUserName.text = Prefs.getString(PrefsKey.NAME)
+                binding.tvRole.text = Prefs.getString(PrefsKey.ROLE)
+                pIdLastSelected = Prefs.getString(PrefsKey.DEF_PROPERTY_ID)
+                proprtyList = Prefs.getString(PrefsKey.PROPERTIES, proprtyList.toString()).getList()
+                setPropertiesSpinner()
+                binding.btnStart.visible()
+            }
             observeLiveData()
             return binding.root
         } catch (e: Exception) {
@@ -131,12 +141,16 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                     Prefs.putString(PrefsKey.TIME_INTERVAL, user?.timeInterval.toString())
                     Prefs.putString(PrefsKey.RADIUS, user?.radius.toString())
                     Prefs.putString(PrefsKey.USER_ID, user?.id)
-                    binding.tvUserName.text = user?.firstname + " " + user?.lastname
+                    val name = user?.firstname + " " + user?.lastname
+                    Prefs.putString(PrefsKey.NAME, name)
+                    binding.tvUserName.text = name
                     var role = user?.primaryRole.toString()
                     if (role == "null")
                         role = user?.role?.name.toString()
                     binding.tvRole.text = role
+                    Prefs.putString(PrefsKey.ROLE, role)
                     pIdLastSelected = user?.property?.id
+                    Prefs.putString(PrefsKey.DEF_PROPERTY_ID, pIdLastSelected)
                 }
             }
         }
@@ -148,28 +162,9 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                     }
                 } else {
                     proprtyList = response?.data?.getAllProperties
-                    if (proprtyList != null) {
-                        val locationArray = mutableListOf<String>()
-                        var itemClick = 0
-                        for ((i, p) in proprtyList!!.withIndex()) {
-                            locationArray.add(p?.name.toString())
-                            if (pIdLastSelected == p?.id)
-                                itemClick = i
-                        }
-                        val adapter = ArrayAdapter(
-                            requireContext(),
-                            R.layout.item_spinner, locationArray
-                        )
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        binding.spinner.adapter = adapter
-                        binding.spinner.setSelection(itemClick, false)
-                    } else {
-                        materialDialog(getString(R.string.no_property), "", "OK") {
-                            it.dismiss()
-                        }
-                        binding.ivDropdown.gone()
-                        binding.spinner.gone()
-                    }
+                    val json = proprtyList?.toJson()
+                    Prefs.putString(PrefsKey.PROPERTIES, json)
+                    setPropertiesSpinner()
                 }
             }
         }
@@ -237,6 +232,31 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                     }
                 }
             }
+        }
+    }
+
+    private fun setPropertiesSpinner() {
+        if (proprtyList != null) {
+            val locationArray = mutableListOf<String>()
+            var itemClick = 0
+            for ((i, p) in proprtyList!!.withIndex()) {
+                locationArray.add(p?.name.toString())
+                if (pIdLastSelected == p?.id)
+                    itemClick = i
+            }
+            val adapter = ArrayAdapter(
+                requireContext(),
+                R.layout.item_spinner, locationArray
+            )
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.spinner.adapter = adapter
+            binding.spinner.setSelection(itemClick, false)
+        } else {
+            materialDialog(getString(R.string.no_property), "", "OK") {
+                it.dismiss()
+            }
+            binding.ivDropdown.gone()
+            binding.spinner.gone()
         }
     }
 

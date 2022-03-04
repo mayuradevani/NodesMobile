@@ -57,7 +57,7 @@ dependencies {
 
     def dialog = "3.3.0"
 
-    implementation 'org.osmdroid:osmdroid-android:6.1.11'
+//    implementation 'org.osmdroid:osmdroid-android:6.1.11'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'androidx.core:core-ktx:1.7.0'

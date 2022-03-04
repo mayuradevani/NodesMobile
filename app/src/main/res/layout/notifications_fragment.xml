@@ -13,6 +13,7 @@
             android:id="@+id/tvNotifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
             android:background="@color/grey_bg"
             android:gravity="center"
             android:padding="20dp"

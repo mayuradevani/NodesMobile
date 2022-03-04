@@ -5,19 +5,20 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/bg_page_white"
         android:layout_height="match_parent"
+        android:background="@color/bg_page_white"
         tools:context=".view.ui.login.LoginEmailFragment">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvSiteNotes"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:background="@color/grey_bg"
             android:gravity="center"
+            android:minHeight="60dp"
             android:padding="20dp"
-            android:textColor="@color/grey_text"
             android:text="@string/record_site_note"
+            android:textColor="@color/grey_text"
             android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
