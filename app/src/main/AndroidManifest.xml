@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Splash"
+            android:name=".view.ui.Splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".view.ui.MainActivity"
             android:exported="true" />
 
         <service

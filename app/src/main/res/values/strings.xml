@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">NODES Mobile</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="site_notes">Site Notes</string>
     <string name="validate">validate</string>
     <string name="please_open">Please open the email on this device and return to this application to continue</string>
@@ -9,7 +8,6 @@
     <string name="i_did_not_rec">I did not receive a link</string>
     <string name="the_nodes">The Nodes platform is only available to licensed users with registered email addresses.\n\nIf you did not yet receive an email, please wait a few minutes and check your junk mail, otherwise contact your system administrator</string>
     <string name="please_enter">Please enter your registered Nodes email address to continue</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="record_site_note">Record Site Note</string>
     <string name="tasks">Tasks</string>
     <string name="notifications">Notifications</string>
@@ -21,32 +19,22 @@
     <string name="auto_map_download">Auto map download</string>
     <string name="data_usage">Data Usage</string>
     <string name="always">Always</string>
-    <string name="auto">Auto</string>
     <string name="newest">Newest</string>
     <string name="help">Help</string>
     <string name="default_map">Default Map</string>
     <string name="night_mode">Night Mode</string>
     <string name="map">Map</string>
     <string name="logout">Log Out</string>
-    <string name="off">Off</string>
-    <string name="on">On</string>
     <string name="automatic_text">"Automatic night mode will darken the screen when ambient light conditions are low"</string>
     <string name="on_text">Night mode remains On</string>
     <string name="off_text">Day mode remains On</string>
-    <string name="do_you_want_night_mode_on">Do you want to set Night Mode On?</string>
-    <string name="do_you_want_night_mode_off">Do you want to set Night Mode Off?</string>
-    <string name="do_you_want_night_mode_auto">Do you want to set Night Mode Auto?</string>
-
     <string name="_34_41_28_68">34°41\'28.68\" N</string>
     <string name="_135_10">135°10\'58.80\" E</string>
     <string name="_2021_07_12">2021.07.12</string>
     <string name="utc_09_12_24">UTC 09:12:24</string>
     <string name="numbers">Numbers</string>
-    <string name="app_notification_channel_id">nodes_channel</string>
-    <string name="snooze">Snooze</string>
-    <string name="app_notification_channel_name">BrainPool</string>
     <string name="about">About NODES</string>
-    <string name="about_text">about text</string>
+    <string name="about_text">About NODES text</string>
     <string name="about_nodes">About NODES</string>
     <string name="help_text">Help Text</string>
     <string name="read_write_permission_rationale">Storage permission needed to access offline maps</string>
@@ -63,4 +51,12 @@
     <string name="yes">YES</string>
     <string name="no">NO</string>
     <string name="do_you_want_to_logout">Do you want to Log Out?</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="auto">Auto</string>
+
+    //Do not convert these in other languages, as they are used as keys
+    <string name="app_notification_channel_id">nodes_channel</string>
+    <string name="app_notification_channel_name">BrainPool</string>
+
 </resources>

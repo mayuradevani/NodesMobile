@@ -5,7 +5,6 @@ import android.os.Looper
 import android.util.Log
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.util.GlobalVar
-import app.brainpool.nodesmobile.util.WifiService
 import com.apollographql.apollo.ApolloClient
 import com.pixplicity.easyprefs.library.Prefs
 import okhttp3.Interceptor
@@ -32,18 +31,14 @@ class NodesMobileApi {
 private class AuthorizationInterceptor(val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         try {
-            if (!WifiService.instance.isOnline())
-                throw IOException("No internet connection")
-            else {
-                val request = chain.request().newBuilder()
-                    .addHeader("Authorization", Prefs.getString(PrefsKey.AUTH_KEY))
-                    .build()
-                Log.d(GlobalVar.TAG, "Call:$request")
-                return chain.proceed(request)
-            }
+            val request = chain.request().newBuilder()
+                .addHeader("Authorization", Prefs.getString(PrefsKey.AUTH_KEY))
+                .build()
+            Log.d(GlobalVar.TAG, "Call:$request")
+            return chain.proceed(request)
         } catch (e: Exception) {
             e.printStackTrace()
-            throw IOException("No internet connection")
+            throw IOException("Exception")
         }
     }
 }

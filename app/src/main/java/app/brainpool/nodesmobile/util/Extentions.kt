@@ -51,30 +51,6 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-//fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) =
-//    liveData.observe(this, androidx.lifecycle.Observer(body))
-//
-//fun <T : Any, L : LiveData<ViewState<T>>> LifecycleOwner.observeViewState(
-//    liveData: L,
-//    loader: View? = null,
-//    body: (T?) -> Unit
-//) {
-//    this.observe(liveData) {
-//        when (it) {
-//            is ViewState.Loading -> {
-//                loader?.visible()
-//            }
-//            is ViewState.Error -> {
-//                loader?.gone()
-//            }
-//            is ViewState.Success -> {
-//                body.invoke(it.value)
-//                loader?.gone()
-//            }
-//        }
-//    }
-//}
-
 suspend fun <T> Task<T>.await(): T? = suspendCoroutine { continuetion ->
     this.addOnCompleteListener {
         if (it.isSuccessful) {
@@ -86,10 +62,10 @@ suspend fun <T> Task<T>.await(): T? = suspendCoroutine { continuetion ->
     }
 }
 
-fun setNightModeOnOff(s: String) {
-    if (s == "On") {
+fun setNightModeOnOff(context: Context, s: String) {
+    if (s == context.getString(R.string.on)) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-    } else if (s == "Off") {
+    } else if (s == context.getString(R.string.off)) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     } else {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)

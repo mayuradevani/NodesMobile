@@ -1,9 +1,10 @@
-package app.brainpool.nodesmobile
+package app.brainpool.nodesmobile.view.ui
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.util.navigate
 import app.brainpool.nodesmobile.view.ui.home.HomeActivity

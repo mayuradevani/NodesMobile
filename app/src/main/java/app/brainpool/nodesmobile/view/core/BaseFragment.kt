@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
-import app.brainpool.nodesmobile.Splash
+import app.brainpool.nodesmobile.view.ui.Splash
 import app.brainpool.nodesmobile.util.await
 import app.brainpool.nodesmobile.util.gone
 import app.brainpool.nodesmobile.util.navigateClearStack
@@ -43,29 +43,9 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
                 is ViewState.Error -> {
                     loader?.gone()
                     if (it.message?.contains("HTTP 401") == true) {
-
                         Handler(Looper.getMainLooper()).postDelayed({
                             viewLifecycleOwner.lifecycleScope.launch { logOut() }
                         }, 3000)
-
-//                        observeViewState(viewModel.logout) { response ->
-//                            if (response?.data?.logoutUserData?.success == true) {
-//                                try {
-//                                    viewLifecycleOwner
-//                                        .lifecycleScope
-//                                        .launch {
-//                                            FirebaseMessaging.getInstance().deleteToken().await()
-//                                            Prefs.clear()
-//                                            requireActivity().navigateClearStack<Splash>()
-//                                            activity?.finish()
-//                                        }
-//
-//                                } catch (e: Exception) {
-//                                    e.printStackTrace()
-//                                }
-//                            }
-//                        }
-//                        viewModel.logout(requireContext())
                     }
                     handleError(it)
                 }

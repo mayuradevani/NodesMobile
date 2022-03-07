@@ -57,7 +57,6 @@ dependencies {
 
     def dialog = "3.3.0"
 
-//    implementation 'org.osmdroid:osmdroid-android:6.1.11'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -148,6 +147,10 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-messaging-ktx:23.0.0'
 
+    implementation "androidx.room:room-runtime:2.3.0"
+    kapt "androidx.room:room-compiler:2.3.0"
+    implementation "androidx.room:room-ktx:2.3.0"
+    
     //google_maps
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
     implementation 'com.google.android.gms:play-services-location:19.0.1'

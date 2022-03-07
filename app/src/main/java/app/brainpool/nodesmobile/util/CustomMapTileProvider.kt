@@ -91,7 +91,6 @@ class CustomMapTileProvider(context: Context) : TileProvider {
                                 target: Target<Bitmap>?,
                                 isFirstResource: Boolean
                             ): Boolean {
-                                //  Log.v(TAG, "URL Not found: : $s2")
                                 return false
                             }
                         })

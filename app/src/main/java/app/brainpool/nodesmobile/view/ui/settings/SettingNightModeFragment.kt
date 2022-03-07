@@ -35,8 +35,7 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
                 if (Prefs.getString(PrefsKey.NIGHT_MODE) != getString(R.string.on)) {
                     Prefs.putString(PrefsKey.NIGHT_MODE, getString(R.string.on))
                     Prefs.putString(PrefsKey.NIGHT_MODE_STRING, getString(R.string.on_text))
-                    setCheck("On")
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    setCheck(getString(R.string.on))
                     context?.let { it1 -> setupTheme(it1, Prefs.getString(PrefsKey.NIGHT_MODE)) }
                 }
             } catch (e: Exception) {
@@ -51,8 +50,7 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
                         PrefsKey.NIGHT_MODE_STRING,
                         getString(R.string.off_text)
                     )
-                    setCheck("Off")
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    setCheck(getString(R.string.off))
                     context?.let { it1 -> setupTheme(it1, Prefs.getString(PrefsKey.NIGHT_MODE)) }
                 }
             } catch (e: Exception) {
@@ -68,32 +66,8 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
                         strAuto
                     )
                     setCheck("Auto")
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     context?.let { it1 -> setupTheme(it1, Prefs.getString(PrefsKey.NIGHT_MODE)) }
                 }
-
-//            try {
-//                var nightMOde = "Auto"
-//                val isNightTheme =
-//                    resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-//                when (isNightTheme) {
-//                    Configuration.UI_MODE_NIGHT_YES -> {
-//                        nightMOde = "On"
-//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-//                    }
-//                    Configuration.UI_MODE_NIGHT_NO -> {
-//                        nightMOde = "Off"
-//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-//                    }
-//                }
-//                Prefs.putString(PrefsKey.NIGHT_MODE, nightMOde)
-//                val intent = Intent(activity, MainActivity::class.java)
-//                intent.putExtra(PrefsKey.NIGHT_MODE, true)
-//                startActivity(intent)
-//                activity?.finish()
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -102,11 +76,11 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
     }
 
     private fun setCheck(s: String) {
-        if (s == "On") {
+        if (s == getString(R.string.on)) {
             binding.ivOn.visible()
             binding.ivOff.gone()
             binding.ivAuto.gone()
-        } else if (s == "Off") {
+        } else if (s == getString(R.string.off)) {
             binding.ivOn.gone()
             binding.ivOff.visible()
             binding.ivAuto.gone()

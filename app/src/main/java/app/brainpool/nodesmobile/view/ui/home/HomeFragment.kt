@@ -13,7 +13,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import app.brainpool.nodesmobile.GetAllPropertiesQuery
-import app.brainpool.nodesmobile.MainActivity
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.data.models.HomeListItem
@@ -47,7 +47,6 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                 binding.btnStart.text = getString(R.string.please_wait)
                 goToMain()
             }
-
 //            binding.ivMap.setOnClickListener {
 //                goToMain()
 //            }
@@ -67,29 +66,19 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                     id: Long
                 ) {
                     val p: GetAllPropertiesQuery.GetAllProperty? = proprtyList?.get(position)
-//                    Prefs.putString(PrefsKey.PROPERTY_ID, p?.id)
-                    if (WifiService.instance.isOnline())
-                        viewModel.getAllMapsByPropertyId(
-                            requireContext(),
-                            p?.id.toString()
-                        )
+                    viewModel.getAllMapsByPropertyId(
+                        requireContext(),
+                        p?.id.toString()
+                    )
                 }
             }
             if (!Prefs.getBoolean(PrefsKey.SENT_TOKEN, false)) {
                 setPushNotificationToken()
             }
-            if (WifiService.instance.isOnline()) {
-                viewModel.getUserProfile(requireContext())
-                viewModel.getAllProperties(requireContext())
-                binding.btnStart.gone()
-            } else {
-                binding.tvUserName.text = Prefs.getString(PrefsKey.NAME)
-                binding.tvRole.text = Prefs.getString(PrefsKey.ROLE)
-                pIdLastSelected = Prefs.getString(PrefsKey.DEF_PROPERTY_ID)
-                proprtyList = Prefs.getString(PrefsKey.PROPERTIES, proprtyList.toString()).getList()
-                setPropertiesSpinner()
-                binding.btnStart.visible()
-            }
+            viewModel.getUserProfile(requireContext())
+            viewModel.getAllProperties(requireContext())
+            binding.btnStart.gone()
+
             observeLiveData()
             return binding.root
         } catch (e: Exception) {
@@ -261,16 +250,13 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
     }
 
     private fun createChannel(channelId: String, channelName: String) {
-        try {// TODO: Step 1.6 START create a channel
+        try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // Create channel to show notifications.
                 val notificationChannel = NotificationChannel(
                     channelId,
                     channelName,
-                    // TODO: Step 2.4 change importance
                     NotificationManager.IMPORTANCE_HIGH
                 )
-                    // TODO: Step 2.6 disable badges for this channel
                     .apply {
                         setShowBadge(false)
                     }
@@ -287,7 +273,6 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                 notificationManager.createNotificationChannel(notificationChannel)
 
             }
-            // TODO: Step 1.6 END create channel
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -296,7 +281,6 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
     private fun itemClickListener(homeListItem: HomeListItem) {
         try {
             when (homeListItem.title) {
-                //            "MAP" -> navController.navigate(R.id.map)
             }
         } catch (e: Exception) {
             e.printStackTrace()

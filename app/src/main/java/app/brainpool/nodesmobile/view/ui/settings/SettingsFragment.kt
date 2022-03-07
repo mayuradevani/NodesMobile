@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import app.brainpool.nodesmobile.MainActivity
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import app.brainpool.nodesmobile.R
-import app.brainpool.nodesmobile.Splash
+import app.brainpool.nodesmobile.view.ui.Splash
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.SettingsFragmentBinding
 import app.brainpool.nodesmobile.util.await
@@ -79,10 +79,8 @@ class SettingsFragment : BaseFragment(R.layout.settings_fragment) {
                         .launch {
                             FirebaseMessaging.getInstance().deleteToken().await()
                             Prefs.clear()
-//                            if (isAdded && isVisible) {
                             requireActivity().navigateClearStack<Splash>()
                             activity?.finish()
-//                            }
                         }
 
                 } catch (e: Exception) {

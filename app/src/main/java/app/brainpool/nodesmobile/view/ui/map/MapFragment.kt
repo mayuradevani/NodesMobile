@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import app.brainpool.nodesmobile.MainActivity
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.MapFragmentBinding
@@ -50,7 +50,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
     OnMapReadyCallback {
 
     lateinit var binding: MapFragmentBinding
-    var overlay: TileOverlay? = null
+    private var overlay: TileOverlay? = null
 
     @ExperimentalCoroutinesApi
     private val viewModel by viewModels<MapViewModel>()
@@ -60,7 +60,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
     private lateinit var lastLocationSent: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
-    var locationUpdateState = false
+    private var locationUpdateState = false
 
     private var MinimumZoom = 3.0f
     private val MaximumZoom = 18.0f
@@ -71,7 +71,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
-    val mapDir = File(
+    private val mapDir = File(
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             .toString() + "/.NodesMobile/" + Prefs.getString(PrefsKey.MAP_TILE_FOLDER)
     )
@@ -96,7 +96,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
                             lastLocationSent.latitude, lastLocationSent.longitude,
                             p0.lastLocation.latitude, p0.lastLocation.longitude, results
                         )
-                        if (results.get(0) >= Prefs.getString(PrefsKey.RADIUS).toInt()) {
+                        if (results[0] >= Prefs.getString(PrefsKey.RADIUS).toInt()) {
                             Log.v(
                                 TAG,
                                 "Tracking Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
@@ -118,7 +118,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         if (this::binding.isInitialized) {
             binding
         } else {
@@ -147,9 +147,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
             || Prefs.getString(
                 PrefsKey.DEFAULT_MAP,
                 getString(R.string.newest)
-            ) == getString(R.string.newest)//This is used for map update settings
-//            || (Prefs.getString(PrefsKey.DATA_USAGE)
-//                .equals(getString(R.string.wifiOnly)) && context?.isWifiNetworkConnected() == true)//This is used for wifi/data usage settings
+            ) == getString(R.string.newest)
         ) {
             checkPermissionAndDownloadMapTiles()
             Prefs.putBoolean(PrefsKey.UPDATE_MAP, false)
@@ -188,7 +186,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
     }
 
 
-    internal fun startLocationUpdates() {
+    private fun startLocationUpdates() {
         try {
             if (context?.let {
                     ActivityCompat.checkSelfPermission(
@@ -213,7 +211,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
-                Looper.getMainLooper() /* Looper */
+                Looper.getMainLooper()
             )
             val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
             mapFragment?.getMapAsync(this)
@@ -309,12 +307,12 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
         observeViewState(viewModel.downloadMaps) { response ->
             try {
                 if (response != null) {
-                    if (response?.data == null) {
+                    if (response.data == null) {
                         materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
                             it.dismiss()
                         }
                     } else {
-                        val mapTileList = response?.data?.downloadMaps
+                        val mapTileList = response.data?.downloadMaps
                         if (mapTileList != null) {
                             val count = getAllImageFilesInAllFolder(mapDir)
                             Log.v(TAG, "Total Images: $count")
@@ -328,7 +326,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
                                             saveImage(
                                                 Glide.with(requireContext())
                                                     .asBitmap()
-                                                    .load(p?.link.toString()) // sample image
+                                                    .load(p?.link.toString())
                                                     .submit()
                                                     .get(), fName
                                             )
@@ -349,7 +347,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
         }
         observeViewState(viewModel.tracker) { response ->
             if (response != null) {
-                if (response?.data == null) {
+                if (response.data == null) {
                     Log.v(TAG, response.errors?.get(0)?.message.toString())
                 } else {
                     Log.v(TAG, "success")
@@ -358,7 +356,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
         }
     }
 
-    val requestPermissionLauncher =
+    private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
@@ -423,11 +421,6 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
                     )
                 )
             )!!
-//            var centerLatLong = LatLng(
-//                Prefs.getDouble(PrefsKey.MAP_CENTER_LATI),
-//                Prefs.getDouble(PrefsKey.MAP_CENTER_LONGI)
-//            )
-//            placeMarkerOnMap(centerLatLong, MaximumZoom)
             overlay?.isVisible = Prefs.getString(PrefsKey.MAP_TYPE) != getString(R.string.device)
 
             activity?.let {
@@ -435,22 +428,15 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
                     if (location != null) {
                         centerLatLong = LatLng(location.latitude, location.longitude)
                         lastLocationSent = location
-                    }
-                    googleMap.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            centerLatLong,
-                            MaximumZoom
+                        googleMap.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                centerLatLong,
+                                MaximumZoom
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
     }
-
-//    private fun placeMarkerOnMap(location: LatLng, zoomLevel: Float) {
-//        val markerOptions = MarkerOptions().position(location)
-//        googleMap.addMarker(markerOptions)
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel))
-//    }
-
 }

@@ -1,4 +1,4 @@
-package app.brainpool.nodesmobile
+package app.brainpool.nodesmobile.view.ui
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.MainBinding
 import app.brainpool.nodesmobile.util.GlobalVar
@@ -25,11 +26,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: MainBinding
 
-    val fragment1: Fragment = MapFragment()
-    val fragment2: Fragment = SiteNotesFragment()
-    val fragment3: Fragment = TasksFragment()
-    val fragment4: Fragment = NotificationsFragment()
-    val fragment5: Fragment = SettingsFragment()
+    private val fragment1: Fragment = MapFragment()
+    private val fragment2: Fragment = SiteNotesFragment()
+    private val fragment3: Fragment = TasksFragment()
+    private val fragment4: Fragment = NotificationsFragment()
+    private val fragment5: Fragment = SettingsFragment()
     val fm: FragmentManager = supportFragmentManager
     var lastActive = Fragment()
     var active = fragment1
@@ -37,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
-            // Obtain the FirebaseAnalytics instance.
             binding = MainBinding.inflate(layoutInflater)
             val view = binding.root
             setContentView(view)
@@ -80,12 +80,6 @@ class MainActivity : AppCompatActivity() {
             fm.beginTransaction().add(R.id.nav_host_fragment, fragment2, "2").hide(fragment2)
                 .commit()
             fm.beginTransaction().add(R.id.nav_host_fragment, fragment1, "1").commit()
-
-
-//            val navHostFragment =
-//                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-//            navController = navHostFragment.navController
-//            binding.bottomNavigation.setupWithNavController(navController)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -94,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     override fun attachBaseContext(base: Context) {
         if (Prefs.getString(PrefsKey.NIGHT_MODE, "") == "")
             Prefs.putString(PrefsKey.NIGHT_MODE, base.getString(R.string.auto))
-        setNightModeOnOff(Prefs.getString(PrefsKey.NIGHT_MODE))
+        setNightModeOnOff(base,Prefs.getString(PrefsKey.NIGHT_MODE))
 
         val context: Context = setupTheme(base, Prefs.getString(PrefsKey.NIGHT_MODE))
         super.attachBaseContext(context)

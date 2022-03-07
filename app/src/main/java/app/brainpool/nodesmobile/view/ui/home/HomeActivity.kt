@@ -33,7 +33,7 @@ class HomeActivity : AppCompatActivity() {
         if (base != null) {
             if (Prefs.getString(PrefsKey.NIGHT_MODE, "") == "")
                 Prefs.putString(PrefsKey.NIGHT_MODE, base.getString(R.string.auto))
-            setNightModeOnOff(Prefs.getString(PrefsKey.NIGHT_MODE))
+            setNightModeOnOff(base,Prefs.getString(PrefsKey.NIGHT_MODE))
 
             val context: Context = setupTheme(base, Prefs.getString(PrefsKey.NIGHT_MODE))
             super.attachBaseContext(context)
