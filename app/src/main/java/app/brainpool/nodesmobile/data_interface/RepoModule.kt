@@ -1,4 +1,4 @@
-package app.brainpool.nodesmobile.di
+package app.brainpool.nodesmobile.data_interface
 
 import app.brainpool.nodesmobile.networking.NodesMobileApi
 import dagger.Module

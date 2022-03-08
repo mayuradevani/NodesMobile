@@ -17,7 +17,6 @@ class NodesMobRepositoryImpl @Inject constructor(
         return webService.getApolloClient(context).query(LanguageCodeDataQuery()).await()
     }
 
-
     override suspend fun getAllProperties(
         context: Context
     ): Response<GetAllPropertiesQuery.Data> {

@@ -18,7 +18,7 @@ class NodesMobileApi {
             "Only in main thread can get the apolloClient instance"
         }
         return ApolloClient.builder()
-            .serverUrl("http://34.149.134.85/graph-private")//34.126.80.190
+            .serverUrl(GlobalVar.DEV_URL)
             .okHttpClient(
                 OkHttpClient.Builder()
                     .addInterceptor(AuthorizationInterceptor(context))
