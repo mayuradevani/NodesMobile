@@ -7,7 +7,6 @@ import app.brainpool.nodesmobile.type.TrackerPositionInput
 import com.apollographql.apollo.api.Response
 
 interface NodesMobRepository {
-    suspend fun launguageCodeData(context:Context): Response<LanguageCodeDataQuery.Data>
     suspend fun loginWithEmail(context:Context,email: String): Response<LoginMutation.Data>
     suspend fun getAllProperties(context: Context): Response<GetAllPropertiesQuery.Data>
     suspend fun getUserProfile(context: Context): Response<GetUserProfileQuery.Data>
@@ -16,4 +15,5 @@ interface NodesMobRepository {
     suspend fun updateOrStoreNotificationToken(context:Context,data: NotificationInput): Response<UpdateOrStoreNotificationTokenMutation.Data>
     suspend fun createTrackerPositionData(context:Context,data: TrackerPositionInput): Response<CreateTrackerPositionDataMutation.Data>
     suspend fun logout(context: Context): Response<LogoutUserDataQuery.Data>
+    suspend fun updateStatusTrackerData(context: Context, deviceId:String,isActive:Boolean): Response<UpdateStatusTrackerDataMutation.Data>
 }

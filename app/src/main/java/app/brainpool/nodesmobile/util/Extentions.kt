@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
@@ -86,11 +85,7 @@ fun setupTheme(context: Context, theme: String): Context {
     }
     val config = Configuration(res.getConfiguration())
     config.uiMode = mode
-    if (Build.VERSION.SDK_INT >= 17) {
-        context = context.createConfigurationContext(config)
-    } else {
-        res.updateConfiguration(config, res.getDisplayMetrics())
-    }
+    context = context.createConfigurationContext(config)
     return context
 }
 
@@ -107,7 +102,7 @@ fun <T> ViewModel.doInBackground(
             liveData.postValue(ViewState.Success(response))
         } catch (e: ApolloException) {
             Log.d("ApolloException", "Failure", e)
-            liveData.postValue(ViewState.Error(e.message))
+            liveData.postValue(ViewState.Error(e.cause.toString()))
         }
     }
 }

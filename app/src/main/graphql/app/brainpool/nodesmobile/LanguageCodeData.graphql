@@ -1,6 +1,0 @@
-query LanguageCodeData {
-    getAllLanguageCodes{
-        id
-        name
-    }
-}

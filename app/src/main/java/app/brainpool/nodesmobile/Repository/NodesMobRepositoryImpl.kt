@@ -13,9 +13,6 @@ class NodesMobRepositoryImpl @Inject constructor(
     private val webService: NodesMobileApi
 ) :
     NodesMobRepository {
-    override suspend fun launguageCodeData(context: Context): Response<LanguageCodeDataQuery.Data> {
-        return webService.getApolloClient(context).query(LanguageCodeDataQuery()).await()
-    }
 
     override suspend fun getAllProperties(
         context: Context
@@ -68,6 +65,15 @@ class NodesMobRepositoryImpl @Inject constructor(
 
     override suspend fun logout(context: Context): Response<LogoutUserDataQuery.Data> {
         return webService.getApolloClient(context).query(LogoutUserDataQuery())
+            .await()
+    }
+
+    override suspend fun updateStatusTrackerData(
+        context: Context,
+        deviceId: String, isActive: Boolean
+    ): Response<UpdateStatusTrackerDataMutation.Data> {
+        return webService.getApolloClient(context)
+            .mutate(UpdateStatusTrackerDataMutation(deviceId, isActive))
             .await()
     }
 }

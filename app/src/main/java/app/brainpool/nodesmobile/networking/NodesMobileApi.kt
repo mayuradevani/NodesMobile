@@ -38,7 +38,7 @@ private class AuthorizationInterceptor(val context: Context) : Interceptor {
             return chain.proceed(request)
         } catch (e: Exception) {
             e.printStackTrace()
-            throw IOException("Exception")
+            throw IOException("Failed to connect to Server")
         }
     }
 }

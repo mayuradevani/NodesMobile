@@ -31,7 +31,7 @@
         tools:layout="@layout/settings_fragment" />
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="app.brainpool.nodesmobile.view.ui.settings.AboutFragment"
+        android:name="app.brainpool.nodesmobile.view.ui.settings.about.AboutFragment"
         android:label="AboutFragment"
         tools:layout="@layout/about_fragment" />
     <fragment

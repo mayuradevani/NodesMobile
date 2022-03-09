@@ -1,4 +1,4 @@
-package app.brainpool.nodesmobile.view.ui.settings
+package app.brainpool.nodesmobile.view.ui.settings.about
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.AboutFragmentBinding
+import app.brainpool.nodesmobile.view.ui.settings.AboutViewModel
 import com.alcophony.app.ui.core.BaseFragment
 
 class AboutFragment : BaseFragment(R.layout.about_fragment) {

@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import app.brainpool.nodesmobile.view.ui.MainActivity
 import app.brainpool.nodesmobile.R
-import app.brainpool.nodesmobile.view.ui.Splash
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.SettingsFragmentBinding
 import app.brainpool.nodesmobile.util.await
 import app.brainpool.nodesmobile.util.materialDialog
 import app.brainpool.nodesmobile.util.navigateClearStack
+import app.brainpool.nodesmobile.view.ui.MainActivity
+import app.brainpool.nodesmobile.view.ui.Splash
+import app.brainpool.nodesmobile.view.ui.settings.about.AboutFragment
 import com.alcophony.app.ui.core.BaseFragment
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
@@ -48,6 +49,7 @@ class SettingsFragment : BaseFragment(R.layout.settings_fragment) {
         binding.switchDeviceTracking.setOnCheckedChangeListener(null)
         binding.switchDeviceTracking.isChecked = Prefs.getBoolean(PrefsKey.DEVICE_TRACKING, true)
         binding.switchDeviceTracking.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.updateLocUpdateStatus(requireContext(), isChecked)
             Prefs.putBoolean(PrefsKey.DEVICE_TRACKING, isChecked)
         }
         binding.tvLogout.setOnClickListener {

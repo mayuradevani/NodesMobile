@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.brainpool.nodesmobile.LogoutUserDataQuery
 import app.brainpool.nodesmobile.Repository.NodesMobRepository
+import app.brainpool.nodesmobile.UpdateStatusTrackerDataMutation
+import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.util.doInBackground
 import app.brainpool.nodesmobile.view.state.ViewState
 import com.apollographql.apollo.api.Response
+import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -30,5 +33,18 @@ class SettingsViewModel @Inject constructor(private val repository: NodesMobRepo
             repository.logout(context)
         }
     }
+
+    private val _updateLocUpdateStatus by lazy {
+        MutableLiveData<ViewState<Response<UpdateStatusTrackerDataMutation.Data>>>()
+    }
+    val updateLocUpdateStatus: LiveData<ViewState<Response<UpdateStatusTrackerDataMutation.Data>>>
+        get() = _updateLocUpdateStatus
+
+    fun updateLocUpdateStatus(context: Context, isActive: Boolean) = viewModelScope.launch {
+        doInBackground(_updateLocUpdateStatus) {
+            repository.updateStatusTrackerData(context, Prefs.getString(PrefsKey.IMEI), isActive)
+        }
+    }
+
 }
 

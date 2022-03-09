@@ -1,0 +1,9 @@
+mutation updateStatusTrackerData($deviceId:String!,$isActive:Boolean!){
+    updateStatusTrackerData(name:$deviceId,isActive: $isActive) {
+        success
+        detail {
+            message
+            type
+        }
+    }
+}
