@@ -28,10 +28,6 @@
     <string name="automatic_text">"Mod malam automatik akan menggelapkan skrin apabila keadaan cahaya ambien rendah"</string>
     <string name="on_text">Mod malam kekal Dihidupkan</string>
     <string name="off_text">Mod hari kekal Dihidupkan</string>
-    <string name="_34_41_28_68">34°41\'28.68\" N</string>
-    <string name="_135_10">135°10\'58.80\" E</string>
-    <string name="_2021_07_12">2021.07.12</string>
-    <string name="utc_09_12_24">UTC 09:12:24</string>
     <string name="numbers">Nombor</string>
     <string name="about">Tentang NODES</string>
     <string name="about_text">Perihal teks NODES</string>
@@ -54,4 +50,6 @@
     <string name="auto">Auto</string>
     <string name="off">Mati</string>
     <string name="on">Hidupkan</string>
+    <string name="map_not_downloaded">Peta ini belum dimuat turun ke peranti anda.  Sila pergi ke dalam talian untuk memuat turun</string>
+    <string name="map_not_found">Jubin Peta Lalai kosong untuk sifat ini</string>
 </resources>

@@ -17,16 +17,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
         remoteMessage?.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
-            sendNotification(it.title!!, it.body!!, remoteMessage.data.get("filename"))
+            sendNotification(it.title!!, remoteMessage.data)//remoteMessage.data.get("mapFileName"),remoteMessage.data.get("propertyId")
         }
     }
 
-    private fun sendNotification(title: String, messageBody: String, fileName: String?) {
+    private fun sendNotification(
+        title: String,
+        messageBody: MutableMap<String, String>,
+    ) {
         val notificationManager = ContextCompat.getSystemService(
             applicationContext,
             NotificationManager::class.java
         ) as NotificationManager
-        notificationManager.sendNotification(title, messageBody, fileName, applicationContext)
+        notificationManager.sendNotification(title, messageBody,  applicationContext)
     }
 
     override fun onNewToken(token: String) {

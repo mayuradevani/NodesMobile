@@ -1,31 +1,28 @@
 package app.brainpool.nodesmobile.data
 
 object PrefsKey {
-    const val UPDATE_MAP = "UPDATE_MAP"
-    const val MAP_TILE_FOLDER = "MAP_TILE_FOLDER"
-    const val MAP_TILE_FILE_NAME = "MAP_TILE_FILE_NAME"
-    const val MAP_CENTER_LATI = "MAP_CENTER_LATI"
-    const val MAP_CENTER_LONGI = "MAP_CENTER_LONGI"
-    const val MAP_SOUTHWEST_LATI = "MAP_SOUTHWEST_LATI"
-    const val MAP_SOUTHWEST_LONGI = "MAP_SOUTHWEST_LONGI"
-    const val MAP_NORTHEAST_LATI = "MAP_NORTHEAST_LATI"
-    const val MAP_NORTHEAST_LONGI = "MAP_NORTHEAST_LONGI"
+//    const val UPDATE_MAP = "UPDATE_MAP"
+//    const val MAP_TILE_FOLDER = "MAP_TILE_FOLDER"
+//    const val MAP_TILE_FILE_NAME = "MAP_TILE_FILE_NAME"
+//    const val MAP_CENTER_LATI = "MAP_CENTER_LATI"
+//    const val MAP_CENTER_LONGI = "MAP_CENTER_LONGI"
+//    const val MAP_SOUTHWEST_LATI = "MAP_SOUTHWEST_LATI"
+//    const val MAP_SOUTHWEST_LONGI = "MAP_SOUTHWEST_LONGI"
+//    const val MAP_NORTHEAST_LATI = "MAP_NORTHEAST_LATI"
+//    const val MAP_NORTHEAST_LONGI = "MAP_NORTHEAST_LONGI"
     const val AUTH_KEY = "AUTH_KEY"
-    const val USER_ID = "USER_ID"
-    const val LICENCE_NUMBER_ID = "LICENCE_NUMBER_ID"
-    const val LICENCE_NUMBER_NAME = "LICENCE_NUMBER_NAME"
-    const val DEF_PROPERTY_ID = "DEF_PROPERTY_ID"
+//    const val USER_ID = "USER_ID"
+//    const val LICENCE_NUMBER_ID = "LICENCE_NUMBER_ID"
+//    const val LICENCE_NUMBER_NAME = "LICENCE_NUMBER_NAME"
+//    const val DEF_PROPERTY_ID = "DEF_PROPERTY_ID"
     const val SENT_TOKEN: String = "SENT_TOKEN"
     const val MAP_TYPE = "MAP_TYPE"
 
-    const val IMEI = "IMEI"
-    const val TIME_INTERVAL = "TIME_INTERVAL"
-    const val RADIUS = "RADIUS"
+//    const val IMEI = "IMEI"
+//    const val TIME_INTERVAL = "TIME_INTERVAL"
+//    const val RADIUS = "RADIUS"
 
-
-    const val NAME = "NAME"
-    const val ROLE = "ROLE"
-    const val PROPERTIES = "PROPERTY"
+//    const val PROPERTIES = "PROPERTY"
 
 
     //setting page

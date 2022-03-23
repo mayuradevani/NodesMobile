@@ -4,7 +4,7 @@ buildscript {
         gradle_version = '7.1.2'
         kotlin_version = "1.4.31"
         apollo_version = "2.5.9"
-        hilt_version = "2.38"
+        hilt_version = "2.38.1"
         hilt_compiler_version = '1.0.0-alpha03'
         legacy_support_v4_version = '1.0.0'
     }

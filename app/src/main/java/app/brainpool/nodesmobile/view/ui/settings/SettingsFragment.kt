@@ -31,6 +31,7 @@ class SettingsFragment : BaseFragment(R.layout.settings_fragment) {
     @ExperimentalCoroutinesApi
     private val viewModel by viewModels<SettingsViewModel>()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -89,6 +90,8 @@ class SettingsFragment : BaseFragment(R.layout.settings_fragment) {
                     e.printStackTrace()
                 }
             }
+        }
+        observeViewState(viewModel.updateLocUpdateStatus, binding.fetchProgress) { response ->
         }
     }
 

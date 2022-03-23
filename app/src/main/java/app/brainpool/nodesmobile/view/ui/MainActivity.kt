@@ -3,13 +3,11 @@ package app.brainpool.nodesmobile.view.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.databinding.MainBinding
-import app.brainpool.nodesmobile.util.GlobalVar
 import app.brainpool.nodesmobile.util.setNightModeOnOff
 import app.brainpool.nodesmobile.util.setupTheme
 import app.brainpool.nodesmobile.view.ui.map.MapFragment
@@ -22,7 +20,7 @@ import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     lateinit var binding: MainBinding
 
     private val fragment1: Fragment = MapFragment()
@@ -34,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     var lastActive = Fragment()
     var active = fragment1
 
+//    @ExperimentalCoroutinesApi
+//    private val viewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
@@ -42,15 +43,17 @@ class MainActivity : AppCompatActivity() {
             setContentView(view)
 
             /*This is used for map update notification received from server*/
-            if (!intent.getStringExtra(GlobalVar.EXTRA_FILE_NAME)
-                    .isNullOrEmpty()
-            ) {
-                Prefs.putBoolean(PrefsKey.UPDATE_MAP, true)
-                Prefs.putString(
-                    PrefsKey.MAP_TILE_FILE_NAME,
-                    intent.getStringExtra(GlobalVar.EXTRA_FILE_NAME)
-                )
-            }
+//            val fNameNoti = intent.getStringExtra(GlobalVar.PROPERTY_ID)
+//            if (!fNameNoti.isNullOrEmpty()) {
+//                updateMap(
+//                    intent.getStringExtra(GlobalVar.PROPERTY_ID),
+//                    fNameNoti
+//                )
+////                (fragment1 as MapFragment).refreshForMapUpdate(
+////                    intent.getStringExtra(GlobalVar.PROPERTY_ID)
+////                        .toString()
+////                )
+//            }
 
             binding.ivSetting.setOnClickListener {
                 if (lastActive is SettingsFragment) {
@@ -78,11 +81,21 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             fm.beginTransaction().add(R.id.nav_host_fragment, fragment2, "2").hide(fragment2)
                 .commit()
-            fm.beginTransaction().add(R.id.nav_host_fragment, fragment1, "1").commit()
+//            val arguments = Bundle()
+//            arguments.putString("appnotification", (messageBody ?: "{}").toString())
+
+            val noti = intent.extras?.get("appnotification")?: "{}"
+            val args = Bundle()
+//            args.putString(GlobalVar.PROPERTY_ID, intent.getStringExtra(GlobalVar.PROPERTY_ID))
+            args.putString("appnotification", noti.toString())
+            fragment1.arguments = args
+            fm.beginTransaction().add(R.id.nav_host_fragment, fragment1, "1")
+                .commit()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
 
     override fun attachBaseContext(base: Context) {
         if (Prefs.getString(PrefsKey.NIGHT_MODE, "") == "")

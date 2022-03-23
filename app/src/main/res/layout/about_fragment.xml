@@ -11,14 +11,15 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvSettings"
+            style="@style/Heading1Arial"
             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-            android:minHeight="60dp"
+            android:layout_height="wrap_content"
             android:background="@color/grey_bg"
             android:gravity="center"
+            android:minHeight="60dp"
             android:text="@string/about"
             android:textColor="@color/grey_text"
-            android:textSize="25sp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

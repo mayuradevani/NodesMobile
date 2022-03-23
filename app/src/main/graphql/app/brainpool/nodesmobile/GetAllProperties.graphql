@@ -19,7 +19,12 @@ query GetAllProperties($isArchive:Boolean){
             timestamp
             timestamp_update
         }
-        timestamp
-        timestamp_update
+        defaultMap {
+            id
+            fileType
+            mapId
+            fileUrl
+            filename
+        }
     }
 }

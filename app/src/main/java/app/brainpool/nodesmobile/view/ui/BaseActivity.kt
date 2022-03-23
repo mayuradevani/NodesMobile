@@ -1,22 +1,27 @@
-package com.alcophony.app.ui.core
+package app.brainpool.nodesmobile.view.ui
 
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.annotation.LayoutRes
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
+import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.util.*
 import app.brainpool.nodesmobile.view.state.ViewState
-import app.brainpool.nodesmobile.view.ui.Splash
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
 import com.tapadoo.alerter.Alerter
 import kotlinx.coroutines.launch
 
-abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
+open class BaseActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_base2)
+    }
+
     var isLogout = false
 
     private fun handleError(state: ViewState<*>) {
@@ -41,7 +46,7 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
                     loader?.gone()
                     if (it.message?.contains("HTTP 401") == true) {
                         Handler(Looper.getMainLooper()).postDelayed({
-                            viewLifecycleOwner.lifecycleScope.launch { logOut() }
+                            lifecycleScope.launch { logOut() }
                         }, 3000)
                     }
                     handleError(it)
@@ -60,13 +65,12 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
                 isLogout = true
                 FirebaseMessaging.getInstance().deleteToken().await()
                 Prefs.clear()
-                if (isAdded && isVisible) {
-                    activity?.navigateClearStack<Splash>()
-                    activity?.finish()
-                }
+                navigateClearStack<Splash>()
+                finish()
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.NodesMobile" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange</item>
@@ -17,9 +18,66 @@
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">sans-serif</item>
     </style>
+
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.MaterialComponents.Dark">
         <item name="colorControlNormal">@color/white</item>
         <item name="titleTextColor">@color/white</item>
         <item name="android:background">@color/grey_dark</item>
+    </style>
+
+    <style name="Heading1Arial">
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="Heading1InCalibri">
+        <item name="android:fontFamily">@font/calibri</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="Heading2Arial">
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="Heading2Calibri">
+        <item name="android:fontFamily">@font/calibri</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="NormalInArial">
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="NormalInCalibri">
+        <item name="android:fontFamily">@font/calibri</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="TextGrey">
+        <item name="android:fontFamily">@font/calibri</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="TextDarkGrey">
+        <item name="android:fontFamily">@font/calibri</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:letterSpacing">-0.02</item>
     </style>
 </resources>

@@ -19,8 +19,9 @@
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/drawable/ic_up_down.xml" value="0.2703125" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/drawable/thumb_selector.xml" value="0.2703125" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/drawable/track_selector.xml" value="0.2703125" />
+        <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/font/arial.xml" value="0.23047699451245252" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/font/calibri.xml" value="0.28" />
-        <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/about_fragment.xml" value="0.25416666666666665" />
+        <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/about_fragment.xml" value="0.264" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_base.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_holding.xml" value="0.264" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/activity_location.xml" value="0.26614583333333336" />
@@ -46,7 +47,7 @@
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/login.xml" value="0.176" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/login_fragment.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/main.xml" value="0.25" />
-        <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/map_fragment.xml" value="0.2" />
+        <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/map_fragment.xml" value="0.264" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/notifications_fragment.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/setting_data_usage_fragment.xml" value="0.25416666666666665" />
         <entry key="..\:/Projects/Anita/NodesMobile/app/src/main/res/layout/setting_default_map_fragment.xml" value="0.25416666666666665" />

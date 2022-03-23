@@ -5,6 +5,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey_bg">#E7E6E6</color>
     <color name="tr_grey_bg">#80E7E6E6</color>
+    <color name="tr_grey_bg_gr">#DAE7E6E6</color>
     <color name="grey_dark">#404040</color>
     <color name="statusbarColor">#404040</color>
     <color name="grey_text">#808080</color>

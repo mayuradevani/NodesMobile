@@ -8,7 +8,13 @@
         android:id="@+id/mapFragment"
         android:name="app.brainpool.nodesmobile.view.ui.map.MapFragment"
         android:label="MapFragment"
-        tools:layout="@layout/map_fragment"/>
+        tools:layout="@layout/map_fragment">
+        <argument
+            android:name="appnotification"
+            android:defaultValue=""
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/tasksFragment"
         android:name="app.brainpool.nodesmobile.view.ui.tasks.TasksFragment"

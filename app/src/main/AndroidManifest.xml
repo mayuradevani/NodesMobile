@@ -66,7 +66,7 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/common_google_signin_btn_icon_dark" />
+            android:resource="@drawable/logo_small" />
         <!--
              Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more.
