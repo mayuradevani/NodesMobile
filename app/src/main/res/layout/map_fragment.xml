@@ -54,6 +54,16 @@
                 app:layout_constraintStart_toEndOf="@+id/tvMapType"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ProgressBar
+                android:id="@+id/fetch_progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivUpDown"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvSiteNotes"
                 android:layout_width="wrap_content"
@@ -79,13 +89,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clHeader" />
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ivProperty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="60dp"
-            android:src="@color/tr_grey_bg"
+            android:src="@color/tr_grey_bg_gr"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -93,7 +102,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@string/_34_41_28_68"
+                android:textColor="@color/grey_dark"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@+id/tvLocEast"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -104,31 +114,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@string/_135_10"
+                android:textColor="@color/grey_dark"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLocNorth" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvDate"
+            <TextClock
+                android:id="@+id/textClock"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/_2021_07_12"
-                app:layout_constraintBottom_toTopOf="@+id/tvTime"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:format12Hour="MM-dd-yyyy hh:mm:ss"
+                android:gravity="right"
+                android:textColor="@color/grey_dark"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/utc_09_12_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

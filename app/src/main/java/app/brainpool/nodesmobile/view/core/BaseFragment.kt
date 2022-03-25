@@ -8,12 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
-import app.brainpool.nodesmobile.view.ui.Splash
-import app.brainpool.nodesmobile.util.await
-import app.brainpool.nodesmobile.util.gone
-import app.brainpool.nodesmobile.util.navigateClearStack
-import app.brainpool.nodesmobile.util.showAlert
+import app.brainpool.nodesmobile.util.*
 import app.brainpool.nodesmobile.view.state.ViewState
+import app.brainpool.nodesmobile.view.ui.Splash
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
 import com.tapadoo.alerter.Alerter
@@ -38,7 +35,7 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
         this.observe(liveData) {
             when (it) {
                 is ViewState.Loading -> {
-                    loader?.gone()
+                    loader?.visible()
                 }
                 is ViewState.Error -> {
                     loader?.gone()

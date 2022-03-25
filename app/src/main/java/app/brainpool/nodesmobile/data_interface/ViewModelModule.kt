@@ -1,7 +1,7 @@
 package app.brainpool.nodesmobile.data_interface
 
-import app.brainpool.nodesmobile.Repository.NodesMobRepository
-import app.brainpool.nodesmobile.Repository.NodesMobRepositoryImpl
+import app.brainpool.nodesmobile.repository.NodesMobRepository
+import app.brainpool.nodesmobile.repository.NodesMobRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

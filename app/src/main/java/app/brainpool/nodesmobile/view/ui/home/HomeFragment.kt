@@ -1,9 +1,6 @@
 package app.brainpool.nodesmobile.view.ui.home
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.graphics.Color
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,40 +9,42 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
-import app.brainpool.nodesmobile.GetAllPropertiesQuery
-import app.brainpool.nodesmobile.view.ui.MainActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
+import app.brainpool.nodesmobile.data.localdatastore.Property
+import app.brainpool.nodesmobile.data.localdatastore.UserNodes
 import app.brainpool.nodesmobile.data.models.HomeListItem
 import app.brainpool.nodesmobile.databinding.HomeFragmentBinding
 import app.brainpool.nodesmobile.util.*
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import com.alcophony.app.ui.core.BaseFragment
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(R.layout.home_fragment) {
     lateinit var binding: HomeFragmentBinding
     private val viewModel by viewModels<HomeViewModel>()
-    var proprtyList: List<GetAllPropertiesQuery.GetAllProperty?>? = null
-    var pIdLastSelected: String? = null
+    private lateinit var userNodes: UserNodes
+    var pId: String = ""
+
+    //    var proprtyList: List<Property> = ArrayList()
+    lateinit var adapter: ArrayAdapter<Property>
+    private var pIdLastSelected: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         try {
-            createChannel(
-                getString(R.string.app_notification_channel_id),
-                getString(R.string.app_notification_channel_name)
-            )
             binding = HomeFragmentBinding.inflate(inflater)
             binding.btnStart.setOnClickListener {
                 binding.btnStart.text = getString(R.string.please_wait)
-                goToMain()
+                goToMain(pId)
             }
 //            binding.ivMap.setOnClickListener {
 //                goToMain()
@@ -65,18 +64,24 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                     position: Int,
                     id: Long
                 ) {
-                    val p: GetAllPropertiesQuery.GetAllProperty? = proprtyList?.get(position)
-                    viewModel.getAllMapsByPropertyId(
-                        requireContext(),
-                        p?.id.toString()
-                    )
+                    pId = adapter.getItem(position)?.id.toString()
+//                    if (p != null)
+//                        if (WifiService.instance.isOnline()) {
+//                            viewModel.getAllMapsByPropertyId(
+//                                requireContext(),
+//                                p.id.toString()
+//                            )
+//                        } else
+//                            p.let { viewModel.getAllMapsByPropertyId(it) }
+                    binding.btnStart.visible()
                 }
             }
-            if (!Prefs.getBoolean(PrefsKey.SENT_TOKEN, false)) {
-                setPushNotificationToken()
+
+            if (WifiService.instance.isOnline()) {
+                viewModel.getUserProfile(requireContext())
+            } else {
+                viewModel.getUserProfileLocal()
             }
-            viewModel.getUserProfile(requireContext())
-            viewModel.getAllProperties(requireContext())
             binding.btnStart.gone()
 
             observeLiveData()
@@ -87,10 +92,10 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
         return container
     }
 
-    private fun setPushNotificationToken() {
+    private fun setPushNotificationToken(user: UserNodes) {
         FirebaseMessaging.getInstance()
             .token.addOnSuccessListener {
-                viewModel.sendToken(requireContext(), it)
+                viewModel.updateOrStoreNotificationToken(requireContext(), it, user)
             }
     }
 
@@ -99,8 +104,15 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
         binding.btnStart.text = getString(R.string.log_in)
     }
 
-    private fun goToMain() {
-        activity?.navigate<MainActivity>()
+    private fun goToMain(pId: String) {
+//        val arguments = Bundle()
+//        arguments.putString("appnotification", (messageBody ?: "{}").toString())
+
+        val args = JSONObject()
+        args.put("propertyId", pId)
+        val noti = args.toString() ?: "{}"
+        startActivity(Intent(context, MainActivity::class.java).putExtra("appnotification", noti))
+//        activity?.navigateWithExtra<MainActivity>(pId)
     }
 
     private fun observeLiveData() {
@@ -113,168 +125,66 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                 binding.fetchProgress.gone()
             }
         }
-        observeViewState(viewModel.userProfile, binding.fetchProgress) { response ->
-            if (response != null) {
-                if (response?.data == null) {
-                    materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
-                        it.dismiss()
-                    }
-                } else {
-                    val user = response?.data?.getUserProfile
-                    if (user?.licensenumber?.id?.isNotEmpty() == true) {
-                        Prefs.putString(PrefsKey.LICENCE_NUMBER_ID, user?.licensenumber?.id)
-                        Prefs.putString(PrefsKey.LICENCE_NUMBER_NAME, user?.licensenumber?.name)
-                    }
-                    Prefs.putString(PrefsKey.IMEI, user?.imei)
-                    Firebase.crashlytics.setUserId(user?.imei.toString())
-                    Prefs.putString(PrefsKey.TIME_INTERVAL, user?.timeInterval.toString())
-                    Prefs.putString(PrefsKey.RADIUS, user?.radius.toString())
-                    Prefs.putString(PrefsKey.USER_ID, user?.id)
-                    val name = user?.firstname + " " + user?.lastname
-                    Prefs.putString(PrefsKey.NAME, name)
-                    binding.tvUserName.text = name
-                    var role = user?.primaryRole.toString()
-                    if (role == "null")
-                        role = user?.role?.name.toString()
-                    binding.tvRole.text = role
-                    Prefs.putString(PrefsKey.ROLE, role)
-                    pIdLastSelected = user?.property?.id
-                    Prefs.putString(PrefsKey.DEF_PROPERTY_ID, pIdLastSelected)
+        observeViewState(viewModel.userProfile, binding.fetchProgress) { user ->
+            if (user != null) {
+                userNodes = user
+//                if (user.licenseNumberId?.isNotEmpty() == true) {
+//                    Prefs.putString(PrefsKey.LICENCE_NUMBER_ID, user.licenseNumberId)
+//                    Prefs.putString(PrefsKey.LICENCE_NUMBER_NAME, user.licenseNumberName)
+//                }
+//                Prefs.putString(PrefsKey.IMEI, user.imei)
+                Firebase.crashlytics.setUserId(user.imei.toString())
+//                Prefs.putString(PrefsKey.TIME_INTERVAL, user.timeInterval.toString())
+//                Prefs.putString(PrefsKey.RADIUS, user.radius.toString())
+//                Prefs.putString(PrefsKey.USER_ID, user.id)
+                val name = user.firstname + " " + user.lastname
+//                Prefs.putString(PrefsKey.NAME, name)
+                binding.tvUserName.text = name
+//                var role = user.role
+                binding.tvRole.text = user.role
+//                Prefs.putString(PrefsKey.ROLE, role)
+                pIdLastSelected = user.defPropertyId
+//                Prefs.putString(PrefsKey.DEF_PROPERTY_ID, pIdLastSelected)
+                if (!Prefs.getBoolean(PrefsKey.SENT_TOKEN, false)) {
+                    setPushNotificationToken(userNodes)
                 }
+                if (WifiService.instance.isOnline()) {
+                    viewModel.getAllProperties(requireContext())
+                } else {
+                    viewModel.getAllPropertiesLocal()
+                }
+
             }
         }
-        observeViewState(viewModel.getAllProperties, binding.fetchProgress) { response ->
-            if (response != null) {
-                if (response?.data == null) {
-                    materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
-                        it.dismiss()
-                    }
-                } else {
-                    proprtyList = response?.data?.getAllProperties
-                    val json = proprtyList?.toJson()
-                    Prefs.putString(PrefsKey.PROPERTIES, json)
-                    setPropertiesSpinner()
-                }
+        observeViewState(viewModel.getAllProperties, binding.fetchProgress) { proprtyList ->
+            if (proprtyList != null) {
+                setPropertiesSpinner(proprtyList)
             }
         }
-        observeViewState(viewModel.getAllMapsByPropertyId, binding.fetchProgress) { response ->
-            if (response != null) {
-                if (response?.data == null) {
-                    materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
-                        it.dismiss()
-                    }
-                } else {
-                    val proprtyList = response?.data?.getAllMapsByPropertyId
-                    if (proprtyList != null) {
-                        for (p in proprtyList) {
-                            if (p?.isDefault == true) {
-                                if (!p.mapTileFile?.filename.isNullOrEmpty()) {
-                                    Prefs.putString(
-                                        PrefsKey.MAP_TILE_FILE_NAME,
-                                        p.mapTileFile?.filename
-                                    )
-                                    var folder = ""
-                                    if (p.mapTileFile?.filename?.contains(".jpg") == true)
-                                        folder = p.mapTileFile?.filename?.split(".jpg")?.get(0)
-                                    else
-                                        folder = p.mapTileFile?.filename?.split(".tiff")?.get(0)
-                                            .toString()
 
-                                    Prefs.putString(
-                                        PrefsKey.MAP_TILE_FOLDER,
-                                        folder
-                                    )
-
-                                    //center
-                                    Prefs.putDouble(
-                                        PrefsKey.MAP_CENTER_LATI,
-                                        p.center?.coordinates?.get(1)!!
-                                    )
-                                    Prefs.putDouble(
-                                        PrefsKey.MAP_CENTER_LONGI,
-                                        p.center?.coordinates?.get(0)!!
-                                    )
-
-                                    //south west
-                                    Prefs.putDouble(
-                                        PrefsKey.MAP_SOUTHWEST_LATI,
-                                        p.center?.coordinates?.get(1)!!
-                                    )
-                                    Prefs.putDouble(
-                                        PrefsKey.MAP_SOUTHWEST_LONGI,
-                                        p.center?.coordinates?.get(0)!!
-                                    )
-
-                                    //north east
-                                    Prefs.putDouble(
-                                        PrefsKey.MAP_NORTHEAST_LATI,
-                                        p.center?.coordinates?.get(1)!!
-                                    )
-                                    Prefs.putDouble(
-                                        PrefsKey.MAP_NORTHEAST_LONGI,
-                                        p.center?.coordinates?.get(0)!!
-                                    )
-                                    binding.btnStart.visible()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
-    private fun setPropertiesSpinner() {
-        if (proprtyList != null) {
-            val locationArray = mutableListOf<String>()
-            var itemClick = 0
-            for ((i, p) in proprtyList!!.withIndex()) {
-                locationArray.add(p?.name.toString())
-                if (pIdLastSelected == p?.id)
-                    itemClick = i
-            }
-            val adapter = ArrayAdapter(
+    private fun setPropertiesSpinner(proprtyList: MutableList<Property>) {
+        if (proprtyList.isNotEmpty()) {
+            adapter = ArrayAdapter(
                 requireContext(),
-                R.layout.item_spinner, locationArray
+                R.layout.item_spinner, proprtyList
             )
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             binding.spinner.adapter = adapter
-            binding.spinner.setSelection(itemClick, false)
+            for (position in 0 until adapter.count) {
+                if (adapter.getItem(position)?.id ?: 0 == userNodes.defPropertyId) {
+                    binding.spinner.setSelection(position, false)
+                    return
+                }
+            }
+
         } else {
             materialDialog(getString(R.string.no_property), "", "OK") {
                 it.dismiss()
             }
             binding.ivDropdown.gone()
             binding.spinner.gone()
-        }
-    }
-
-    private fun createChannel(channelId: String, channelName: String) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val notificationChannel = NotificationChannel(
-                    channelId,
-                    channelName,
-                    NotificationManager.IMPORTANCE_HIGH
-                )
-                    .apply {
-                        setShowBadge(false)
-                    }
-
-                notificationChannel.enableLights(true)
-                notificationChannel.lightColor = Color.RED
-                notificationChannel.enableVibration(true)
-                notificationChannel.description = getString(R.string.app_notification_channel_id)
-
-                val notificationManager = requireActivity().getSystemService(
-                    NotificationManager::class.java
-                )
-
-                notificationManager.createNotificationChannel(notificationChannel)
-
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 

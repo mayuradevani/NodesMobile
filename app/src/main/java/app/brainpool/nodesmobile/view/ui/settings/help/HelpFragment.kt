@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.HelpFragmentBinding
+import app.brainpool.nodesmobile.view.ui.settings.about.AboutViewModel
 import com.alcophony.app.ui.core.BaseFragment
 
 class HelpFragment : BaseFragment(R.layout.help_fragment) {

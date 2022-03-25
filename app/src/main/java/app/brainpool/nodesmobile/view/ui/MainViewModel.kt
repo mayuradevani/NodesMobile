@@ -1,7 +1,7 @@
 package app.brainpool.nodesmobile.view.ui
 
 import androidx.lifecycle.ViewModel
-import app.brainpool.nodesmobile.Repository.NodesMobRepository
+import app.brainpool.nodesmobile.repository.NodesMobRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject

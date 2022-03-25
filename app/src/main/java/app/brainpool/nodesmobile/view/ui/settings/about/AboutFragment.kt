@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.AboutFragmentBinding
-import app.brainpool.nodesmobile.view.ui.settings.AboutViewModel
 import com.alcophony.app.ui.core.BaseFragment
 
 class AboutFragment : BaseFragment(R.layout.about_fragment) {

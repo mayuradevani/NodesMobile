@@ -18,15 +18,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import app.brainpool.nodesmobile.view.ui.MainActivity
+import androidx.navigation.fragment.navArgs
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
+import app.brainpool.nodesmobile.data.localdatastore.Property
+import app.brainpool.nodesmobile.data.localdatastore.UserNodes
+import app.brainpool.nodesmobile.data.models.AppNotification
 import app.brainpool.nodesmobile.databinding.MapFragmentBinding
 import app.brainpool.nodesmobile.type.LatLongInput
 import app.brainpool.nodesmobile.util.*
 import app.brainpool.nodesmobile.util.GlobalVar.TAG
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import com.alcophony.app.ui.core.BaseFragment
-import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -39,10 +42,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.android.material.snackbar.Snackbar
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
@@ -64,17 +64,15 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
 
     private var MinimumZoom = 3.0f
     private val MaximumZoom = 18.0f
-
+    private lateinit var userNodes: UserNodes
+    private lateinit var property: Property
     private lateinit var centerLatLong: LatLng
+    var folderName = ""
+    private val extras by navArgs<MapFragmentArgs>()
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
-
-    private val mapDir = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            .toString() + "/.NodesMobile/" + Prefs.getString(PrefsKey.MAP_TILE_FOLDER)
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +86,14 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
                         TAG,
                         "Last Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
                     )
-                    if (Prefs.getBoolean(PrefsKey.DEVICE_TRACKING, true)) {
+                    binding.tvLocNorth.text = getDegree(p0.lastLocation.latitude) + "N"
+                    binding.tvLocEast.text = getDegree(p0.lastLocation.longitude) + "E"
+
+                    if (Prefs.getBoolean(
+                            PrefsKey.DEVICE_TRACKING,
+                            true
+                        ) && WifiService.instance.isOnline()
+                    ) {
                         if (!::lastLocationSent.isInitialized)
                             lastLocationSent = p0.lastLocation
                         val results = FloatArray(1)
@@ -96,17 +101,18 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
                             lastLocationSent.latitude, lastLocationSent.longitude,
                             p0.lastLocation.latitude, p0.lastLocation.longitude, results
                         )
-                        if (results[0] >= Prefs.getString(PrefsKey.RADIUS).toInt()) {
-                            Log.v(
-                                TAG,
-                                "Tracking Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
-                            )
-                            createTrackerPositionData(
-                                p0.lastLocation.latitude,
-                                p0.lastLocation.longitude
-                            )
-                            lastLocationSent = p0.lastLocation
-                        }
+                        if (userNodes.radius != null)
+                            if (results[0] >= userNodes.radius!!) {
+                                Log.v(
+                                    TAG,
+                                    "Tracking Location: ${p0.lastLocation.latitude} and ${p0.lastLocation.longitude}"
+                                )
+                                createTrackerPositionData(
+                                    p0.lastLocation.latitude,
+                                    p0.lastLocation.longitude
+                                )
+                                lastLocationSent = p0.lastLocation
+                            }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -124,16 +130,35 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
         } else {
             binding = MapFragmentBinding.inflate(inflater)
             setUI()
+            observeLiveData()
+            viewModel.getUserProfileLocal()
+
+            arguments?.apply {
+                MapFragmentArgs.fromBundle(this).appnotification.apply {
+                    if (this != null) {
+                        var noti: AppNotification? = this.fromJson()
+                        if (noti?.mapFileName?.isNotEmpty() == true)//notification
+                            updateMap(noti)
+                        else
+                            viewModel.getProperty(noti?.propertyId.toString())
+                        Log.v(TAG, "P1: " + noti?.propertyId.toString())
+                    }
+                }
+            }
         }
-        observeLiveData()
+
         return binding.root
     }
 
     private fun setUI() {
-        centerLatLong = LatLng(
-            Prefs.getDouble(PrefsKey.MAP_CENTER_LATI),
-            Prefs.getDouble(PrefsKey.MAP_CENTER_LONGI)
-        )
+//        centerLatLong = LatLng(
+//            Prefs.getDouble(PrefsKey.MAP_CENTER_LATI),
+//            Prefs.getDouble(PrefsKey.MAP_CENTER_LONGI)
+//        )
+//        centerLatLong = LatLng(
+//            property.centerLat,
+//            property.centerLong
+//        )
         binding.tvSiteNotes.setOnClickListener {
             (activity as MainActivity).binding.bottomNavigation.selectedItemId =
                 R.id.siteNotesFragment
@@ -143,15 +168,9 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
             showMaptiles()
         }
         binding.ivUpDown.setOnClickListener { binding.tvMapType.performClick() }
-        if (Prefs.getBoolean(PrefsKey.UPDATE_MAP) //This is used for map update notification received from server
-            || Prefs.getString(
-                PrefsKey.DEFAULT_MAP,
-                getString(R.string.newest)
-            ) == getString(R.string.newest)
-        ) {
-            checkPermissionAndDownloadMapTiles()
-            Prefs.putBoolean(PrefsKey.UPDATE_MAP, false)
-        }
+
+        binding.textClock.format24Hour = null
+        binding.textClock.format12Hour = "yyyy.MM.dd\nhh:mm:ss a"
     }
 
     private fun showMaptiles() {
@@ -206,7 +225,6 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
             }
             if (!::locationRequest.isInitialized) {
                 createLocationRequest()
-
             }
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
@@ -222,35 +240,35 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
 
     private fun createLocationRequest() {
         try {
-            var time = Prefs.getString(PrefsKey.TIME_INTERVAL, "5")
-            if (time == "null")
-                time = "5"
-            locationRequest = LocationRequest.create().apply {
-                interval = (1000 * time.toLong())
-                fastestInterval = (1000 * time.toLong())
-                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            }
+            val time = userNodes.timeInterval
+            if (time != null) {
+                locationRequest = LocationRequest.create().apply {
+                    interval = (1000 * time.toLong())
+                    fastestInterval = (1000 * time.toLong())
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                }
 
-            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+                val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
-            val client = LocationServices.getSettingsClient(requireActivity())
-            val task = client.checkLocationSettings(builder.build())
+                val client = LocationServices.getSettingsClient(requireActivity())
+                val task = client.checkLocationSettings(builder.build())
 
-            task.addOnSuccessListener {
-                locationUpdateState = true
-                startLocationUpdates()
-            }
-            task.addOnFailureListener { e ->
-                if (e is ResolvableApiException) {
-                    try {
-                        activity?.let {
-                            e.startResolutionForResult(
-                                it,
-                                GlobalVar.REQUEST_CHECK_SETTINGS
-                            )
+                task.addOnSuccessListener {
+                    locationUpdateState = true
+                    startLocationUpdates()
+                }
+                task.addOnFailureListener { e ->
+                    if (e is ResolvableApiException) {
+                        try {
+                            activity?.let {
+                                e.startResolutionForResult(
+                                    it,
+                                    GlobalVar.REQUEST_CHECK_SETTINGS
+                                )
+                            }
+                        } catch (sendEx: IntentSender.SendIntentException) {
+                            sendEx.printStackTrace()
                         }
-                    } catch (sendEx: IntentSender.SendIntentException) {
-                        sendEx.printStackTrace()
                     }
                 }
             }
@@ -294,56 +312,73 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
     }
 
     private fun downloadMaps() {
-        val fName = Prefs.getString(PrefsKey.MAP_TILE_FILE_NAME)
-        if (!fName.isNullOrEmpty() && fName != "null")
-            viewModel.downloadMaps(requireContext(), Prefs.getString(PrefsKey.MAP_TILE_FILE_NAME))
+        if (::property.isInitialized) {
+            val fName = property.fileName //Prefs.getString(PrefsKey.MAP_TILE_FILE_NAME)
+            val mapId = property.mapId
+            if (!mapId.isEmpty() && mapId != "null")
+                viewModel.downloadMaps(activity as AppCompatActivity, mapId, fName)
+//                if (WifiService.instance.isOnline())
+//                    viewModel.downloadMaps(activity as AppCompatActivity, mapId, fName)
+//                else
+//                    viewModel.getLocalMaps(mapId)
+        }
     }
 
     private fun createTrackerPositionData(latitude: Double, longitude: Double) {
         viewModel.createTrackerPositionData(requireContext(), LatLongInput(latitude, longitude))
     }
 
+    private fun updateMap(pId: AppNotification?) {
+        val prop = Property().apply {
+            id = pId?.propertyId.toString()
+            fileName = pId?.mapFileName.toString()
+            mapId = pId?.mapId.toString()
+        }
+        viewModel.updatePropertyNotification(prop)
+    }
+
     private fun observeLiveData() {
-        observeViewState(viewModel.downloadMaps) { response ->
-            try {
-                if (response != null) {
-                    if (response.data == null) {
-                        materialDialog(response.errors?.get(0)?.message.toString(), "", "OK") {
-                            it.dismiss()
-                        }
-                    } else {
-                        val mapTileList = response.data?.downloadMaps
-                        if (mapTileList != null) {
-                            val count = getAllImageFilesInAllFolder(mapDir)
-                            Log.v(TAG, "Total Images: $count")
-                            if (mapTileList.size != count) {
-                                Log.v(TAG, "Downloading Map tiles")
-                                for (p in mapTileList) {
-                                    var fName = p?.link.toString()
-                                    fName = fName.substring(fName.indexOf("maptiles/") + 9)
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        try {
-                                            saveImage(
-                                                Glide.with(requireContext())
-                                                    .asBitmap()
-                                                    .load(p?.link.toString())
-                                                    .submit()
-                                                    .get(), fName
-                                            )
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
-                                            Log.v(TAG, "Error:$fName")
-                                        }
-                                    }
-                                }
-                                Log.v(TAG, "Downloading Map tiles complete")
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+        observeViewState(viewModel.userProfile, binding.fetchProgress) { user ->
+            if (user != null) {
+                userNodes = user
             }
+        }
+        observeViewState(viewModel.propUpdate, binding.fetchProgress) { prop ->
+            if (prop != null) {
+                viewModel.getProperty(prop.id)
+            }
+        }
+        observeViewState(viewModel.getProp, binding.fetchProgress) { prop ->
+            if (prop != null) {
+                property = prop
+//                folder = if (property.fileUrl.contains("/brainpoollicense/maptiles/"))
+//                    property.fileUrl.split("/brainpoollicense/maptiles/")[1]
+//                else
+//                    ""
+////                else if (property.fileName.contains(".png"))
+////                    property.fileName.split(".png")[0]
+////                else
+////                    property.fileName.split(".tiff")[0]
+
+//                folder = if (property.fileName.contains(".jpg"))
+//                    property.fileName.split(".jpg")[0]
+//                else if (property.fileName.contains(".png"))
+//                    property.fileName.split(".png")[0]
+//                else
+//                    property.fileName.split(".tiff")[0]
+                folderName = if (property.fileName.contains("."))
+                    property.fileName.split(".")[0]
+                else
+                    ""
+                if (WifiService.instance.isOnline()) {
+                    checkPermissionAndDownloadMapTiles()
+                }
+                if (!locationUpdateState) {
+                    startLocationUpdates()
+                }
+            }
+        }
+        observeViewState(viewModel.downloadMaps, binding.fetchProgress) { listMapTiles ->
         }
         observeViewState(viewModel.tracker) { response ->
             if (response != null) {
@@ -379,7 +414,7 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
 
     override fun onResume() {
         super.onResume()
-        if (!locationUpdateState) {
+        if (!locationUpdateState && ::property.isInitialized) {
             startLocationUpdates()
         }
     }
@@ -414,15 +449,24 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
             googleMap.uiSettings.isTiltGesturesEnabled = false
             googleMap.uiSettings.isZoomControlsEnabled = true
             googleMap.uiSettings.isZoomGesturesEnabled = true
-            overlay = map.addTileOverlay(
-                TileOverlayOptions().tileProvider(
-                    CustomMapTileProvider(
-                        requireContext()
-                    )
+            if (WifiService.instance.isOnline())
+                addOverlayOnMap(googleMap)
+            else {//offline and map not found
+                val mapDir = File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                        .toString() + "/.NodesMobile/" + folderName //Prefs.getString(PrefsKey.MAP_TILE_FOLDER)
                 )
-            )!!
-            overlay?.isVisible = Prefs.getString(PrefsKey.MAP_TYPE) != getString(R.string.device)
-
+                val count = getAllImageFilesInFolder(mapDir)
+                Log.v(TAG, "Total Images: $count")
+                if (count == 0) {
+                    materialDialog(getString(R.string.map_not_downloaded), "", "OK")
+                    {
+                        it.dismiss()
+                    }
+                } else {
+                    addOverlayOnMap(googleMap)
+                }
+            }
             activity?.let {
                 fusedLocationClient.lastLocation.addOnSuccessListener(it) { location ->
                     if (location != null) {
@@ -439,4 +483,20 @@ class MapFragment : BaseFragment(R.layout.map_fragment),
             }
         }
     }
+
+    private fun addOverlayOnMap(map: GoogleMap) {
+        overlay = map.addTileOverlay(
+            TileOverlayOptions().tileProvider(
+                CustomMapTileProvider(
+                    requireContext(), folderName
+                )
+            )
+        )!!
+        overlay?.isVisible =
+            Prefs.getString(PrefsKey.MAP_TYPE) != getString(R.string.device)
+    }
+
+//    fun refreshForMapUpdate(pId: String) {
+//        viewModel.getProperty(pId)
+//    }
 }

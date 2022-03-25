@@ -1,5 +1,5 @@
-query downloadMaps($filename:String!){
-    downloadMaps(filename:$filename)
+query downloadMaps($mapId:String!){
+    downloadMaps(mapId:$mapId)
     {
         link
     }

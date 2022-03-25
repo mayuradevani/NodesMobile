@@ -1,8 +1,12 @@
 package app.brainpool.nodesmobile.view.ui.login
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -46,6 +50,10 @@ class LoginActivity : AppCompatActivity() {
                         navController?.handleDeepLink(Intent().apply {
                             try {
                                 if (link != null) {
+                                    createChannel(
+                                        getString(R.string.app_notification_channel_id),
+                                        getString(R.string.app_notification_channel_name)
+                                    )
                                     var deepLink: Uri? = link.link
                                     val authToken: String =
                                         deepLink?.getQueryParameter("token").toString()
@@ -60,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
                                         Prefs.putString(PrefsKey.AUTH_KEY, authToken)
                                         val userId: String =
                                             deepLink?.getQueryParameter("userId").toString()
-                                        Prefs.putString(PrefsKey.USER_ID, userId)
+//                                        Prefs.putString(PrefsKey.USER_ID, userId)
                                         Prefs.putString(PrefsKey.MAP_TYPE, getString(R.string.overlay))
                                         Log.v(
                                             ContentValues.TAG,
@@ -75,6 +83,35 @@ class LoginActivity : AppCompatActivity() {
                             }
                         })
                     }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun createChannel(channelId: String, channelName: String) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val notificationChannel = NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+                    .apply {
+                        setShowBadge(false)
+                    }
+
+                notificationChannel.enableLights(true)
+                notificationChannel.lightColor = Color.RED
+                notificationChannel.enableVibration(true)
+                notificationChannel.description = getString(R.string.app_notification_channel_id)
+
+                val notificationManager = getSystemService(
+                    NotificationManager::class.java
+                )
+
+                notificationManager.createNotificationChannel(notificationChannel)
+
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

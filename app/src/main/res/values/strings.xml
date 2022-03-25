@@ -28,10 +28,10 @@
     <string name="automatic_text">"Automatic night mode will darken the screen when ambient light conditions are low"</string>
     <string name="on_text">Night mode remains On</string>
     <string name="off_text">Day mode remains On</string>
-    <string name="_34_41_28_68">34°41\'28.68\" N</string>
-    <string name="_135_10">135°10\'58.80\" E</string>
-    <string name="_2021_07_12">2021.07.12</string>
-    <string name="utc_09_12_24">UTC 09:12:24</string>
+<!--    <string name="_34_41_28_68">34°41\'28.68\" N</string>-->
+<!--    <string name="_135_10">135°10\'58.80\" E</string>-->
+<!--    <string name="_2021_07_12">2021.07.12</string>-->
+<!--    <string name="utc_09_12_24">UTC 09:12:24</string>-->
     <string name="numbers">Numbers</string>
     <string name="about">About NODES</string>
     <string name="about_text">About NODES text</string>
@@ -58,5 +58,6 @@
     //Do not convert these in other languages, as they are used as keys
     <string name="app_notification_channel_id">nodes_channel</string>
     <string name="app_notification_channel_name">BrainPool</string>
-
+    <string name="map_not_downloaded">This map has not been downloaded to your device. Please go online to download</string>
+    <string name="map_not_found">Default Map Tiles are Empty for this property</string>
 </resources>

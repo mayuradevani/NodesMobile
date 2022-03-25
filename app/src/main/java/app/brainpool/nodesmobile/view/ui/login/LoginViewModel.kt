@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.brainpool.nodesmobile.LoginMutation
 import app.brainpool.nodesmobile.R
-import app.brainpool.nodesmobile.Repository.NodesMobRepository
+import app.brainpool.nodesmobile.repository.NodesMobRepository
 import app.brainpool.nodesmobile.util.doInBackground
 import app.brainpool.nodesmobile.view.state.ViewState
 import com.apollographql.apollo.api.Response

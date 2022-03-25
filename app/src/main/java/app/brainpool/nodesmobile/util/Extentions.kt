@@ -6,8 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -26,10 +28,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tapadoo.alerter.Alerter
 import com.tapadoo.alerter.OnHideAlertListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -68,6 +74,84 @@ inline fun <reified T : Activity> Context.navigate() {
     startActivity(Intent(this, T::class.java))
 }
 
+inline fun <reified T : Activity> Context.navigateWithExtra(extra: Any) {
+    if (extra is String) {
+        startActivity(Intent(this, T::class.java).putExtra("appnotification", extra))
+    } else {
+        startActivity(
+            Intent(this, T::class.java).putExtra(
+                "appnotification",
+                extra.toJson() as String
+            )
+        )
+    }
+}
+
+//
+//inline fun <reified T : Activity> Context.navigateWithBundle(extra: Any) {
+//    if (extra is String) {
+//        val args = Bundle()
+//        val intent = Intent(this, T::class.java)
+//        intent.setArguments(args)
+//        startActivity(intent)
+//
+//    } else {
+//        startActivity(Intent(this, T::class.java).putExtra("EXTRA", extra.toJson() as String))
+//    }
+//}
+
+inline fun <reified T : Activity> Fragment.navigateWithExtra(intent: Intent, extra: Any) {
+    if (extra is String) {
+        startActivity(intent.putExtra("EXTRA", extra))
+
+    } else {
+        startActivity(intent.putExtra("EXTRA", extra.toJson() as String))
+    }
+}
+
+inline fun <reified T : Parcelable, reified K : Activity> Context.navigateWithParcebleList(
+    extra: ArrayList<T>
+) {
+    startActivity(Intent(this, K::class.java).putParcelableArrayListExtra("EXTRA", extra))
+
+}
+
+inline fun <reified T : Parcelable> Fragment.navigateWithParcebleList(
+    kClass: Class<out AppCompatActivity>,
+    extra: ArrayList<T>
+) {
+    startActivity(
+        Intent(requireContext(), kClass).putParcelableArrayListExtra(
+            "EXTRA_PAR_LIST",
+            extra
+        )
+    )
+
+}
+
+inline fun <reified T : Parcelable> Fragment.getIntenseParableList(
+    kClass: Class<out AppCompatActivity>,
+    extra: ArrayList<T>
+) = Intent(requireContext(), kClass).putParcelableArrayListExtra("EXTRA_PAR_LIST", extra)
+
+
+inline fun <reified T : Parcelable> Activity.getParcebleListExtra(): ArrayList<T>? {
+    return try {
+        intent.extras?.getParcelableArrayList<T>("EXTRA_PAR_LIST") as ArrayList<T>
+    } catch (e: Exception) {
+        null
+    }
+}
+
+
+inline fun <reified T> Activity.getExtra(): T? {
+    return try {
+        intent.extras?.getString("EXTRA")?.fromJson<T>()
+    } catch (e: Exception) {
+        null
+    }
+}
+
 fun setupTheme(context: Context, theme: String): Context {
     var context: Context = context
     val res: Resources = context.getResources()
@@ -87,6 +171,19 @@ fun setupTheme(context: Context, theme: String): Context {
     config.uiMode = mode
     context = context.createConfigurationContext(config)
     return context
+}
+
+fun <R> CoroutineScope.executeAsyncTask(
+    onPreExecute: () -> Unit,
+    doInBackground: () -> R,
+    onPostExecute: (R) -> Unit
+) = launch {
+    onPreExecute()
+    val result =
+        withContext(Dispatchers.IO) { // runs in background thread without blocking the Main Thread
+            doInBackground()
+        }
+    onPostExecute(result)
 }
 
 fun <T> ViewModel.doInBackground(
@@ -123,12 +220,47 @@ fun Fragment.showAlert(message: String, title: String? = null, callback: (() -> 
 
 }
 
+fun Activity.showAlert(message: String, title: String? = null, callback: (() -> Unit)? = null) {
+    val alert = Alerter.create(this)
+        .setText(message)
+        .setBackgroundColorRes(R.color.grey_dark)
+        .setTitle(title.orEmpty())
+        .enableInfiniteDuration(false)
+        .enableSwipeToDismiss()
+
+    if (callback != null) {
+        alert.setOnHideListener(OnHideAlertListener { callback.invoke() })
+    }
+
+    alert.show()
+
+}
+
 fun Fragment.materialDialog(
     message: String, title: String = "",
     positiveText: String, positiveClickListener: DialogCallback
 ): MaterialDialog? {
     this.let {
         return MaterialDialog(requireContext()).cornerRadius(16f)
+            .show {
+                lifecycleOwner(this@materialDialog)
+                if (title.isNotBlank()) {
+                    title(text = title)
+                }
+                message(text = message)
+                positiveButton(text = positiveText, click = positiveClickListener)
+                noAutoDismiss()
+            }
+
+    }
+    return null
+}
+fun AppCompatActivity.materialDialog(
+    message: String, title: String = "",
+    positiveText: String, positiveClickListener: DialogCallback
+): MaterialDialog? {
+    this.let {
+        return MaterialDialog(applicationContext).cornerRadius(16f)
             .show {
                 lifecycleOwner(this@materialDialog)
                 if (title.isNotBlank()) {
@@ -179,7 +311,7 @@ inline fun <reified T> Context.navigateClearStack() {
 fun Any.toJson() = Gson().toJson(this)
 inline fun <reified T> String.fromJson(): T? = Gson().fromJson(this, T::class.java);
 
-fun getAllImageFilesInAllFolder(mapDir: File): Any {
+fun getAllImageFilesInFolder(mapDir: File): Any {
     var c = 0
     if (mapDir.list() != null)
         for (name in mapDir.list()) {
@@ -219,4 +351,13 @@ fun View.showSnackbar(
     } else {
         snackbar.show()
     }
+}
+
+fun getDegree(str: Double): String? {
+    val intSt = str.toInt()
+    val min = (str % 1) * 60
+    val minStr = String.format("%.2f", min)
+    val sec = (min % 1) * 60
+    val secStr = String.format("%.2f", sec)
+    return "$intSt°$minStr'$secStr\" "
 }

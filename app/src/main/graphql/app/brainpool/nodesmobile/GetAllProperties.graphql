@@ -1,11 +1,10 @@
-query GetAllProperties($isArchive:Boolean){
-    getAllProperties(isArchive:$isArchive){
+query GetAllProperties{
+    getAllProperties{
         id
         name
         internalId
         description
         isActive
-        isArchive
         coordinate{
             type
             coordinates
@@ -19,7 +18,12 @@ query GetAllProperties($isArchive:Boolean){
             timestamp
             timestamp_update
         }
-        timestamp
-        timestamp_update
+        defaultMap {
+            id
+            fileType
+            mapId
+            fileUrl
+            filename
+        }
     }
 }
