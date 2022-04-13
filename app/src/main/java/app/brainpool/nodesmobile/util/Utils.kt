@@ -1,7 +1,11 @@
 package app.brainpool.nodesmobile.util
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Location
 import android.os.Environment
+import androidx.core.app.ActivityCompat
 import app.brainpool.nodesmobile.R
 import java.io.File
 import java.io.FileOutputStream
@@ -13,13 +17,15 @@ fun saveImage(image: Bitmap, imageFileName: String) {
         if (imageFile != null) {
             try {
                 val fOut: OutputStream = FileOutputStream(imageFile)
-                image.compress(Bitmap.CompressFormat.PNG, 100, fOut)
+                if (!image.isRecycled)
+                    image.compress(Bitmap.CompressFormat.PNG, 100, fOut)
                 fOut.close()
+                image.recycle()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        image.recycle()
+
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -65,4 +71,19 @@ fun getNavigationIdForNotificationType(id: String): Int {
         else -> R.id.mapFragment
 
     }
+}
+
+/**
+ * Returns the `location` object as a human readable string.
+ */
+fun Location?.toText(): String {
+    return if (this != null) {
+        "($latitude, $longitude)"
+    } else {
+        "Unknown location"
+    }
+}
+
+fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
+    ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
 }

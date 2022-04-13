@@ -1,13 +1,13 @@
 package app.brainpool.nodesmobile.repository
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import app.brainpool.nodesmobile.*
 import app.brainpool.nodesmobile.data.localdatastore.MapTileNodes
 import app.brainpool.nodesmobile.data.localdatastore.Property
 import app.brainpool.nodesmobile.data.localdatastore.UserNodes
 import app.brainpool.nodesmobile.type.NotificationInput
 import app.brainpool.nodesmobile.type.TrackerPositionInput
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import com.apollographql.apollo.api.Response
 
 interface NodesMobRepository {
@@ -15,7 +15,7 @@ interface NodesMobRepository {
     suspend fun getAllProperties(context: Context): MutableList<Property>
     suspend fun getUserProfile(context: Context): UserNodes
 //    suspend fun getAllMapsByPropertyIdQuery(context:Context,propertyId: String): Property
-    suspend fun downloadMapsQuery(context:AppCompatActivity, mapId:String, fileName: String): MutableList<MapTileNodes>
+    suspend fun downloadMapsQuery(context:MainActivity, mapId:String, fileName: String): MutableList<MapTileNodes>
 
     suspend fun updateOrStoreNotificationToken(context:Context,data: NotificationInput): Response<UpdateOrStoreNotificationTokenMutation.Data>
     suspend fun createTrackerPositionData(context:Context,data: TrackerPositionInput): Response<CreateTrackerPositionDataMutation.Data>
@@ -27,10 +27,10 @@ interface NodesMobRepository {
     suspend fun getUserProfile(): UserNodes
     fun saveUser(user: UserNodes)
     suspend fun getProperty(propertyId: String):Property?
-    fun saveMapList(list: List<MapTileNodes>)
-    suspend fun getAllMaps(mapId: String): MutableList<MapTileNodes>
+//    fun saveMapList(list: List<MapTileNodes>)
+//    suspend fun getAllMaps(mapId: String): MutableList<MapTileNodes>
 
-    fun updateMapTileDownload(m:MapTileNodes)
+//    fun updateMapTileDownload(m:MapTileNodes)
 //    suspend fun getAllMapsToBeDownload(mapId: String): MutableList<MapTileNodes>
     fun updatePropertyNotification(pId:Property):Property?
 }

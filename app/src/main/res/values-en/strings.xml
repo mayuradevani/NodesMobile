@@ -19,7 +19,6 @@
     <string name="auto_map_download">Auto map download</string>
     <string name="data_usage">Data Usage</string>
     <string name="always">Always</string>
-    <string name="newest">Newest</string>
     <string name="help">Help</string>
     <string name="default_map">Default Map</string>
     <string name="night_mode">Night Mode</string>
@@ -33,7 +32,6 @@
     <string name="about_text">About NODES text</string>
     <string name="about_nodes">About NODES</string>
     <string name="help_text">Help Text</string>
-    <string name="read_write_permission_rationale">Storage permission needed to access offline maps</string>
     <string name="ok">OK</string>
     <string name="overlay">Overlay</string>
     <string name="device">Device</string>

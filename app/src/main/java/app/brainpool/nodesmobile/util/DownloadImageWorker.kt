@@ -8,7 +8,6 @@ import app.brainpool.nodesmobile.util.GlobalVar.TAG
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
-
 class DownloadImageWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
     override fun doWork(): Result {
         return try {

@@ -3,7 +3,6 @@ package app.brainpool.nodesmobile.view.ui.map
 import android.content.Context
 import android.content.Context.BATTERY_SERVICE
 import android.os.BatteryManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,10 +16,12 @@ import app.brainpool.nodesmobile.type.LatLongInput
 import app.brainpool.nodesmobile.type.TrackerPositionInput
 import app.brainpool.nodesmobile.util.doInBackground
 import app.brainpool.nodesmobile.view.state.ViewState
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import com.apollographql.apollo.api.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -34,7 +35,7 @@ class MapViewModel @Inject constructor(private val repository: NodesMobRepositor
     val downloadMaps: LiveData<ViewState<MutableList<MapTileNodes>>>
         get() = _downloadMaps
 
-    fun downloadMaps(context: AppCompatActivity, mapId: String, filename: String) = viewModelScope.launch {
+    fun downloadMaps(context: MainActivity, mapId: String, filename: String) = viewModelScope.launch {
         doInBackground(_downloadMaps, "Unable to download map") {
             repository.downloadMapsQuery(context, mapId, filename)
         }
@@ -107,6 +108,10 @@ class MapViewModel @Inject constructor(private val repository: NodesMobRepositor
         doInBackground(_propUpdate, "Unable to get properties") {
             repository.updatePropertyNotification(p) ?: Property()
         }
+    }
+
+    fun updateImages(toFile: File) {
+
     }
 
 //    fun downloadAndSaveImages(context: Context, mapTileList: MutableList<MapTileNodes>) {

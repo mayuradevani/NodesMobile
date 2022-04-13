@@ -11,8 +11,6 @@ import app.brainpool.nodesmobile.util.setNightModeOnOff
 import app.brainpool.nodesmobile.util.setupTheme
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
-import io.realm.Realm
-import io.realm.RealmConfiguration
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
@@ -24,17 +22,6 @@ class HomeActivity : AppCompatActivity() {
         binding = HomeBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        // Ready our SDK
-        Realm.init(this)
-        // Creating our db with custom properties
-        val config = RealmConfiguration.Builder()
-            .name("NodesMobile.realm")
-            .allowQueriesOnUiThread(true)
-            .schemaVersion(1)
-            .deleteRealmIfMigrationNeeded()
-            .build()
-        Realm.setDefaultConfiguration(config)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -154,8 +154,8 @@ inline fun <reified T> Activity.getExtra(): T? {
 
 fun setupTheme(context: Context, theme: String): Context {
     var context: Context = context
-    val res: Resources = context.getResources()
-    var mode: Int = res.getConfiguration().uiMode
+    val res: Resources = context.resources
+    var mode: Int = res.configuration.uiMode
     when (theme) {
         context.getString(R.string.on) -> {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -167,7 +167,7 @@ fun setupTheme(context: Context, theme: String): Context {
         }
         else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
-    val config = Configuration(res.getConfiguration())
+    val config = Configuration(res.configuration)
     config.uiMode = mode
     context = context.createConfigurationContext(config)
     return context
@@ -309,7 +309,7 @@ inline fun <reified T> Context.navigateClearStack() {
 }
 
 fun Any.toJson() = Gson().toJson(this)
-inline fun <reified T> String.fromJson(): T? = Gson().fromJson(this, T::class.java);
+inline fun <reified T> String.fromJson(): T? = Gson().fromJson(this, T::class.java)
 
 fun getAllImageFilesInFolder(mapDir: File): Any {
     var c = 0

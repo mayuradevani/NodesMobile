@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import app.brainpool.nodesmobile.R
@@ -22,7 +21,6 @@ import app.brainpool.nodesmobile.view.ui.home.HomeActivity
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 
 @AndroidEntryPoint
@@ -31,23 +29,19 @@ class LoginActivity : AppCompatActivity() {
     lateinit var binding: LoginBinding
     lateinit var navController: NavController
 
-    @ExperimentalCoroutinesApi
-    lateinit var viewModel: LoginViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
         navController = findNavController(R.id.navLogin)
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         try {
             if (intent != null)
                 FirebaseDynamicLinks.getInstance()
                     .getDynamicLink(intent)
                     .addOnSuccessListener(this) { link ->
-                        navController?.handleDeepLink(Intent().apply {
+                        navController.handleDeepLink(Intent().apply {
                             try {
                                 if (link != null) {
                                     createChannel(
@@ -64,12 +58,15 @@ class LoginActivity : AppCompatActivity() {
                                             )
                                                 .toString() + "/.NodesMobile"
                                         File(pathFolder).deleteRecursively()
-                                        navController?.navigate(R.id.holdingFragment)
+                                        navController.navigate(R.id.holdingFragment)
                                         Prefs.putString(PrefsKey.AUTH_KEY, authToken)
                                         val userId: String =
                                             deepLink?.getQueryParameter("userId").toString()
-//                                        Prefs.putString(PrefsKey.USER_ID, userId)
-                                        Prefs.putString(PrefsKey.MAP_TYPE, getString(R.string.overlay))
+                    //                                        Prefs.putString(PrefsKey.USER_ID, userId)
+                                        Prefs.putString(
+                                            PrefsKey.MAP_TYPE,
+                                            getString(R.string.overlay)
+                                        )
                                         Log.v(
                                             ContentValues.TAG,
                                             "Key: " + Prefs.getString(PrefsKey.AUTH_KEY, "not rec")

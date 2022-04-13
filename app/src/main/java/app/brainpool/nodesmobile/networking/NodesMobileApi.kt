@@ -11,6 +11,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class NodesMobileApi {
     fun getApolloClient(context: Context): ApolloClient {
@@ -21,6 +22,9 @@ class NodesMobileApi {
             .serverUrl(GlobalVar.DEV_URL)
             .okHttpClient(
                 OkHttpClient.Builder()
+                    .connectTimeout(5, TimeUnit.MINUTES) // connect timeout
+                    .writeTimeout(5, TimeUnit.MINUTES) // write timeout
+                    .readTimeout(5, TimeUnit.MINUTES) // read timeout
                     .addInterceptor(AuthorizationInterceptor(context))
                     .build()
             )

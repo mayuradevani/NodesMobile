@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/modal_bg"
+    android:minWidth="300dp"
+    android:padding="12dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSiteNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/site_note"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/latTit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/lat"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSiteNotes" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/latValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/latTit"
+        app:layout_constraintTop_toBottomOf="@+id/tvSiteNotes" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/longTit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/longit"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/latTit" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/longValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/longTit"
+        app:layout_constraintTop_toBottomOf="@+id/latTit" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/tvContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edt_box_bg"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:minHeight="80dp"
+        android:padding="8dp"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/longTit" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:columnWidth="100dp"
+        android:gravity="center"
+        android:numColumns="3"
+        android:padding="15dp"
+        android:stretchMode="columnWidth"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvContent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvImages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_border_grey"
+        android:drawableEnd="@drawable/ic_image"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/text_dark_grey"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="5dp"
+        android:text="@string/add_images"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_images" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvAssignToTit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/assign_to_group"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/flSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/flSpinner" />
+
+    <FrameLayout
+        android:id="@+id/flSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_border_grey"
+        app:layout_constraintStart_toEndOf="@+id/tvAssignToTit"
+        app:layout_constraintTop_toBottomOf="@+id/tvImages">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="32dp"
+            android:spinnerMode="dropdown"
+            android:textSize="14sp" />
+    </FrameLayout>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_cancel"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/text_dark_grey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flSpinner" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_button_orange_small"
+        android:gravity="center"
+        android:text="@string/save"
+        android:textColor="@color/text_dark_grey"
+        app:layout_constraintBottom_toBottomOf="@+id/tvCancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvCancel" />
+</androidx.constraintlayout.widget.ConstraintLayout>

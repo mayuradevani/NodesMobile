@@ -14,7 +14,7 @@ class WifiService {
     }
 
     fun initializeWithApplicationContext(context: Context) {
-        wifiManager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+        wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }

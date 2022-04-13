@@ -89,11 +89,9 @@ class SettingNightModeFragment : BaseFragment(R.layout.setting_night_mode_fragme
             binding.ivOff.gone()
             binding.ivAuto.visible()
         }
-        binding.tvModeText.setText(
-            Prefs.getString(
-                PrefsKey.NIGHT_MODE_STRING,
-                strAuto
-            )
+        binding.tvModeText.text = Prefs.getString(
+            PrefsKey.NIGHT_MODE_STRING,
+            strAuto
         )
     }
 

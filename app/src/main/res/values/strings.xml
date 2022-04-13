@@ -19,7 +19,6 @@
     <string name="auto_map_download">Auto map download</string>
     <string name="data_usage">Data Usage</string>
     <string name="always">Always</string>
-    <string name="newest">Newest</string>
     <string name="help">Help</string>
     <string name="default_map">Default Map</string>
     <string name="night_mode">Night Mode</string>
@@ -37,7 +36,6 @@
     <string name="about_text">About NODES text</string>
     <string name="about_nodes">About NODES</string>
     <string name="help_text">Help Text</string>
-    <string name="read_write_permission_rationale">Storage permission needed to access offline maps</string>
     <string name="ok">OK</string>
     <string name="overlay">Overlay</string>
     <string name="device">Device</string>
@@ -60,4 +58,18 @@
     <string name="app_notification_channel_name">BrainPool</string>
     <string name="map_not_downloaded">This map has not been downloaded to your device. Please go online to download</string>
     <string name="map_not_found">Default Map Tiles are Empty for this property</string>
+
+    <string name="downloading">Downloading Maps</string>
+    <string name="permission_needed_rationale">Location and Storage permissions are required to use NODES Mobile</string>
+    <string name="site_note">Site note</string>
+    <string name="lat">Lat-</string>
+    <string name="longit">Long-</string>
+    <string name="add_images">Add images</string>
+    <string name="assign_to_group">Assign to group</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <!--    <string name="permission_rationale">Location permission needed for core functionality</string>
+        <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+        <string name="is_using_location">is using location</string>
+        <string name="downloading_maptiles">Downloading Map tiles in progress..</string>-->
 </resources>

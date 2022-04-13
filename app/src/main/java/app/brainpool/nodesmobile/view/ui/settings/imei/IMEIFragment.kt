@@ -9,7 +9,9 @@ import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.ImeiFragmentBinding
 import app.brainpool.nodesmobile.view.ui.settings.about.AboutViewModel
 import com.alcophony.app.ui.core.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IMEIFragment : BaseFragment(R.layout.imei_fragment) {
 
     lateinit var binding: ImeiFragmentBinding
@@ -31,7 +33,7 @@ class IMEIFragment : BaseFragment(R.layout.imei_fragment) {
     private fun observeLiveData() {
         observeViewState(viewModel.userProfile, binding.fetchProgress) { user ->
             if (user != null) {
-                binding.tvIMEI.setText(user.imei)
+                binding.tvIMEI.text = user.imei
             }
         }
     }

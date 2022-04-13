@@ -19,7 +19,6 @@
     <string name="auto_map_download">Muat turun peta automatik</string>
     <string name="data_usage">Penggunaan Data</string>
     <string name="always">Sentiasa</string>
-    <string name="newest">Terbaru</string>
     <string name="help">Membantu</string>
     <string name="default_map">Peta Lalai</string>
     <string name="night_mode">Mod Malam</string>
@@ -33,7 +32,6 @@
     <string name="about_text">Perihal teks NODES</string>
     <string name="about_nodes">Tentang NODES</string>
     <string name="help_text">Teks Bantuan</string>
-    <string name="read_write_permission_rationale">Kebenaran storan diperlukan untuk mencapai peta luar talian</string>
     <string name="ok">OK</string>
     <string name="overlay">Bertindih</string>
     <string name="device">Peranti</string>

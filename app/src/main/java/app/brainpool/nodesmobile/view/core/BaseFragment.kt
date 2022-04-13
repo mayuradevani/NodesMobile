@@ -11,14 +11,17 @@ import androidx.lifecycle.lifecycleScope
 import app.brainpool.nodesmobile.util.*
 import app.brainpool.nodesmobile.view.state.ViewState
 import app.brainpool.nodesmobile.view.ui.Splash
+import app.brainpool.nodesmobile.view.ui.map.adapter.ImagesAdapter
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pixplicity.easyprefs.library.Prefs
 import com.tapadoo.alerter.Alerter
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 
 abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
-    var isLogout = false
 
+    var isLogout = false
+    val compositeDisposable = CompositeDisposable()
     private fun handleError(state: ViewState<*>) {
         Alerter.hide()
         state.message?.let { showAlert(it) }
@@ -68,5 +71,17 @@ abstract class BaseFragment(@LayoutRes layout: Int) : Fragment(layout) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onPause() {
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.clear()
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        compositeDisposable.dispose()
+        super.onDestroy()
     }
 }

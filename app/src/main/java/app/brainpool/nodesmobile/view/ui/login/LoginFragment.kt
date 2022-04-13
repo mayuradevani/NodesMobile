@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.databinding.LoginFragmentBinding
@@ -13,11 +13,13 @@ import app.brainpool.nodesmobile.util.materialDialog
 import com.alcophony.app.ui.core.BaseFragment
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment(R.layout.login_fragment) {
 
-    lateinit var viewModel: LoginViewModel
+    @ExperimentalCoroutinesApi
+    private val viewModel by viewModels<LoginViewModel>()
     lateinit var binding: LoginFragmentBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +27,6 @@ class LoginFragment : BaseFragment(R.layout.login_fragment) {
     ): View? {
         try {
             binding = LoginFragmentBinding.inflate(inflater)
-            viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
             binding.btnSubmit.setOnClickListener {
                 binding.edtEmail.validEmail {
                     binding.edtEmail.error = it
@@ -48,8 +49,8 @@ class LoginFragment : BaseFragment(R.layout.login_fragment) {
     private fun observeLiveData() {
         observeViewState(viewModel.login, binding.fetchProgress) { response ->
             if (response != null) {
-                if (response?.data == null) {
-                    materialDialog(response.errors?.get(0)?.message.toString(), "", "OK")
+                if (response.data == null) {
+                    materialDialog(response.errors?.get(0)?.message.toString(), "", getString(R.string.ok))
                     {
                         it.dismiss()
                     }

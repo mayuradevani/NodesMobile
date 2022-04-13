@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import app.brainpool.nodesmobile.R
 import app.brainpool.nodesmobile.data.PrefsKey
 import app.brainpool.nodesmobile.util.navigate
-import app.brainpool.nodesmobile.util.navigateWithExtra
 import app.brainpool.nodesmobile.view.ui.home.HomeActivity
 import app.brainpool.nodesmobile.view.ui.login.LoginActivity
 import com.pixplicity.easyprefs.library.Prefs
@@ -21,12 +20,12 @@ class Splash : AppCompatActivity() {
             if (Prefs.getString(PrefsKey.AUTH_KEY, "").isNullOrEmpty()) {
                 navigate<LoginActivity>()
             } else {
-                if (intent.extras != null) {
-                    navigateWithExtra<MainActivity>(intent.extras.toString())
-                } else
-                    navigate<HomeActivity>()
+//                if (intent.extras != null) {
+//                    navigateWithExtra<MainActivity>(intent.extras.toString())
+//                } else
+                navigate<HomeActivity>()
             }
             finish()
-        }, 3000)
+        }, 3)//3000
     }
 }

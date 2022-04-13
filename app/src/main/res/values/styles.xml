@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/grey_dark</item>
 
         <!-- This is used for statusbar color. -->
-        <item name="colorPrimaryDark">@color/statusbarColor</item>
+        <item name="colorPrimaryDark">@color/statusBarColor</item>
         <!-- This is used for statusbar content color. If statusbarColor is light, use "true" otherwise use "false"-->
         <item name="android:windowLightStatusBar">false</item>
 

@@ -20,15 +20,19 @@ class CustomMapTileProvider(context: Context, mapTileFolder: String) : TileProvi
         var buffer: ByteArrayOutputStream? = null
         return try {
             reversedY = (1 shl zoom) - y - 1
-            `in` = FileInputStream(getTileFile(x, reversedY, zoom))
-            buffer = ByteArrayOutputStream()
-            var nRead: Int
-            val data = ByteArray(BUFFER_SIZE)
-            while (`in`.read(data, 0, BUFFER_SIZE).also { nRead = it } != -1) {
-                buffer.write(data, 0, nRead)
-            }
-            buffer.flush()
-            buffer.toByteArray()
+            var file = getTileFile(x, reversedY, zoom)
+            if (file != null) {
+                `in` = FileInputStream(file)
+                buffer = ByteArrayOutputStream()
+                var nRead: Int
+                val data = ByteArray(BUFFER_SIZE)
+                while (`in`.read(data, 0, BUFFER_SIZE).also { nRead = it } != -1) {
+                    buffer.write(data, 0, nRead)
+                }
+                buffer.flush()
+                buffer.toByteArray()
+            } else
+                return null
         } catch (e: IOException) {
             e.printStackTrace()
             null
@@ -65,9 +69,30 @@ class CustomMapTileProvider(context: Context, mapTileFolder: String) : TileProvi
     }
 
     override fun getTile(x: Int, y: Int, zoom: Int): Tile? {
+//        return if (hasTile(x, y, zoom)) {
         val image = readTileImage(x, y, zoom)
-        return if (image == null) null else Tile(TILE_WIDTH, TILE_HEIGHT, image)
+        return if (image == null) TileProvider.NO_TILE else Tile(TILE_WIDTH, TILE_HEIGHT, image)
+//        } else {
+//            TileProvider.NO_TILE
+//        }
     }
+
+//    private fun hasTile(x: Int, y: Int, zoom: Int): Boolean {
+//        val b: Rect? = TILE_ZOOMS.get(zoom)
+//        return if (b == null) false else b.left <= x && x <= b.right && b.top <= y && y <= b.bottom
+//    }
+
+//    private val TILE_ZOOMS: SparseArray<Rect?> = object : SparseArray<Rect?>() {
+//        init {
+//            put(8, Rect(135, 180, 135, 181))
+//            put(9, Rect(270, 361, 271, 363))
+//            put(10, Rect(541, 723, 543, 726))
+//            put(11, Rect(1082, 1447, 1086, 1452))
+//            put(12, Rect(2165, 2894, 2172, 2905))
+//            put(13, Rect(4330, 5789, 4345, 5810))
+//            put(14, Rect(8661, 11578, 8691, 11621))
+//        }
+//    }
 
     companion object {
         private const val TILE_WIDTH = 256

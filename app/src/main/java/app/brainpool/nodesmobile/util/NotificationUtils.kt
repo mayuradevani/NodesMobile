@@ -49,7 +49,7 @@ fun NotificationManager.sendNotification(
             null
         }
         val arguments = Bundle()
-        arguments.putString("appnotification", (data ?: "{}").toString())
+        arguments.putString("appnotification", data.toString())
         val pendingIntent = NavDeepLinkBuilder(applicationContext)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.nav_main)

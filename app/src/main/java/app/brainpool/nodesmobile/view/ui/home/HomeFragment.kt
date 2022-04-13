@@ -105,14 +105,10 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
     }
 
     private fun goToMain(pId: String) {
-//        val arguments = Bundle()
-//        arguments.putString("appnotification", (messageBody ?: "{}").toString())
-
         val args = JSONObject()
         args.put("propertyId", pId)
-        val noti = args.toString() ?: "{}"
+        val noti = args.toString()
         startActivity(Intent(context, MainActivity::class.java).putExtra("appnotification", noti))
-//        activity?.navigateWithExtra<MainActivity>(pId)
     }
 
     private fun observeLiveData() {
@@ -134,8 +130,8 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
 //                }
 //                Prefs.putString(PrefsKey.IMEI, user.imei)
                 Firebase.crashlytics.setUserId(user.imei.toString())
-//                Prefs.putString(PrefsKey.TIME_INTERVAL, user.timeInterval.toString())
-//                Prefs.putString(PrefsKey.RADIUS, user.radius.toString())
+                Prefs.putString(PrefsKey.TIME_INTERVAL, user.timeInterval.toString())
+                Prefs.putString(PrefsKey.RADIUS, user.radius.toString())
 //                Prefs.putString(PrefsKey.USER_ID, user.id)
                 val name = user.firstname + " " + user.lastname
 //                Prefs.putString(PrefsKey.NAME, name)
@@ -170,7 +166,7 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                 requireContext(),
                 R.layout.item_spinner, proprtyList
             )
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinner.adapter = adapter
             for (position in 0 until adapter.count) {
                 if (adapter.getItem(position)?.id ?: 0 == userNodes.defPropertyId) {

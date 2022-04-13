@@ -3,7 +3,6 @@ package app.brainpool.nodesmobile.repository
 import android.content.Context
 import android.os.Environment
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -17,8 +16,10 @@ import app.brainpool.nodesmobile.type.NotificationInput
 import app.brainpool.nodesmobile.type.TrackerPositionInput
 import app.brainpool.nodesmobile.util.*
 import app.brainpool.nodesmobile.util.GlobalVar.TAG
+import app.brainpool.nodesmobile.view.ui.MainActivity
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.coroutines.await
+import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.ListenableFuture
 import com.vicpin.krealmextensions.save
 import io.realm.Realm
@@ -110,7 +111,7 @@ class NodesMobRepositoryImpl @Inject constructor(
 
     /*This method downloads and save map tiles to local storage*/
     override suspend fun downloadMapsQuery(
-        context: AppCompatActivity,
+        context: MainActivity,
         mapId: String,
         fileName: String
     ): MutableList<MapTileNodes> {
@@ -121,7 +122,7 @@ class NodesMobRepositoryImpl @Inject constructor(
         if (listMapTiles?.size == 0) {
             if (WifiService.instance.isOnline())
                 context.apply {
-                    materialDialog(getString(R.string.map_not_found), "", "OK")
+                    materialDialog(getString(R.string.map_not_found), "", getString(R.string.ok))
                     {
                         it.dismiss()
                     }
@@ -167,59 +168,69 @@ class NodesMobRepositoryImpl @Inject constructor(
 //                }
 
                 if (listMapTiles != null && WifiService.instance.isOnline()) {
-                    if (WifiService.instance.isOnline()) {
-                        val folderName = if (fileName.contains("."))
-                            fileName.split(".")[0]
-                        else
-                            ""
-                        val mapDir = File(
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                                .toString() + "/.NodesMobile/" + folderName
-                        )
-                        val count = getAllImageFilesInFolder(mapDir)
-                        Log.v(
-                            GlobalVar.TAG,
-                            "Total Images: $count & from api: ${listMapTiles.size}"
-                        )
-                        if (listMapTiles.size != count) {
-                            Log.v(GlobalVar.TAG, "Downloading Map tiles")
-                            for (p in listMapTiles) {
-                                var fName = p?.link.toString()
-                                /*directory structure in fName including imageName*/
-                                fName =
-                                    fName.substring(fName.indexOf("maptiles/") + 9)//2D3UYW06VNRV6D/22/3859879/1692547.png
-                                val fileTileImage = getFile(fName)
-                                if (fileTileImage == null || !fileTileImage.exists()) {
-                                    try {
-                                        val manager = WorkManager.getInstance(context)
-                                        if (!isScheduled(manager, p?.link.toString())) {
-                                            val downloadWork =
-                                                OneTimeWorkRequest.Builder(DownloadImageWorker::class.java)
-                                                    .addTag(p?.link.toString())
-                                            val data = Data.Builder()
-                                            data.putString("fName", fName)
-                                            data.putString("link", p?.link)
-                                            downloadWork.setInputData(data.build())
-                                            manager.enqueue(downloadWork.build())
-                                        } else {
-                                            Log.v(TAG, "Already scheduled")
-                                        }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                        if (p != null) {
-                                            Log.v(TAG, "Error:${p.link}")
-                                        }
+                    val folderName = if (fileName.contains("."))
+                        fileName.split(".")[0]
+                    else
+                        ""
+                    val mapDir = File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                            .toString() + "/.NodesMobile/" + folderName
+                    )
+                    val count = getAllImageFilesInFolder(mapDir)
+                    Log.v(
+                        TAG,
+                        "Total Images: $count & from api: ${listMapTiles.size}"
+                    )
+                    if (listMapTiles.size != count) {
+                        Log.v(TAG, "Downloading Map tiles")
+                        try {
+                            context.runOnUiThread {
+                                Snackbar.make(
+                                    context.binding.rvFooter,
+                                    R.string.downloading,
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                        for (p in listMapTiles) {
+                            var fName = p?.link.toString()
+                            /*directory structure in fName including imageName*/
+                            fName =
+                                fName.substring(fName.indexOf("maptiles/") + 9)//2D3UYW06VNRV6D/22/3859879/1692547.png
+                            val fileTileImage = getFile(fName)
+                            if (fileTileImage == null || !fileTileImage.exists()) {
+                                try {
+                                    val manager = WorkManager.getInstance(context)
+                                    if (!isScheduled(manager, p?.link.toString())) {
+                                        val downloadWork =
+                                            OneTimeWorkRequest.Builder(DownloadImageWorker::class.java)
+                                                .addTag(p?.link.toString())
+                                        val data = Data.Builder()
+                                        data.putString("fName", fName)
+                                        data.putString("link", p?.link)
+                                        downloadWork.setInputData(data.build())
+                                        manager.enqueue(downloadWork.build())
+                                    } else {
+                                        Log.v(TAG, "Already scheduled")
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    if (p != null) {
+                                        Log.v(TAG, "Error:${p.link}")
                                     }
                                 }
+                            }
 //                                else {
 //                                    updateMapTileDownload(MapTileNodes().apply {
 //                                        link = p?.link.toString()
 //                                        this.mapId = mapId
 //                                    })
 //                                }
-                            }
-                            Log.v(GlobalVar.TAG, "Downloading Map tiles complete")
                         }
+                        Log.v(TAG, "Downloading Map tiles complete")
                     }
                 }
             }
@@ -249,27 +260,27 @@ class NodesMobRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun updateMapTileDownload(m: MapTileNodes) {
-        val db = Realm.getDefaultInstance()
-        val mapTile = db.where(MapTileNodes::class.java)
-            .equalTo("mapId", m.mapId).equalTo("link", m.link.toString()).findFirst()
-
-        if (mapTile != null) {
-            val mapTile = MapTileNodes().apply {
-                this.mapId = mapTile.mapId
-                fName = mapTile.fName
-                id = mapTile.id
-                link = mapTile.link.toString()
-                isDownloaded = true
-            }
-
-            db.executeTransactionAsync {
-                it.copyToRealmOrUpdate(
-                    mapTile
-                )
-            }
-        }
-    }
+//    override fun updateMapTileDownload(m: MapTileNodes) {
+//        val db = Realm.getDefaultInstance()
+//        val mapTile = db.where(MapTileNodes::class.java)
+//            .equalTo("mapId", m.mapId).equalTo("link", m.link.toString()).findFirst()
+//
+//        if (mapTile != null) {
+//            val mapTile = MapTileNodes().apply {
+//                this.mapId = mapTile.mapId
+//                fName = mapTile.fName
+//                id = mapTile.id
+//                link = mapTile.link.toString()
+//                isDownloaded = true
+//            }
+//
+//            db.executeTransactionAsync {
+//                it.copyToRealmOrUpdate(
+//                    mapTile
+//                )
+//            }
+//        }
+//    }
 
     override suspend fun createTrackerPositionData(
         context: Context,
@@ -308,8 +319,21 @@ class NodesMobRepositoryImpl @Inject constructor(
 
     override suspend fun getUserProfile(): UserNodes {
         val db = Realm.getDefaultInstance()
-        val user = db.where(UserNodes::class.java).findFirst() ?: UserNodes()
-        return user
+        val user = db.where(UserNodes::class.java).isNotEmpty("id").findFirst() ?: UserNodes()
+        return UserNodes().apply {
+            id = user.id
+            email = user.email
+            firstname = user.firstname.toString()
+            lastname = user.lastname.toString()
+            isSuperadmin = user.isSuperadmin
+            licenseNumberId = user.licenseNumberId
+            licenseNumberName = user.licenseNumberName
+            role = user.role
+            defPropertyId = user.defPropertyId
+            imei = user.imei
+            timeInterval = user.timeInterval
+            radius = user.radius
+        }
     }
 
     override fun saveUser(user: UserNodes) {
@@ -357,19 +381,19 @@ class NodesMobRepositoryImpl @Inject constructor(
         return list
     }
 
-    override fun saveMapList(list: List<MapTileNodes>) {
-        val db = Realm.getDefaultInstance()
-        db.executeTransactionAsync {
-            it.copyToRealmOrUpdate(list)
-        }
-    }
+//    override fun saveMapList(list: List<MapTileNodes>) {
+//        val db = Realm.getDefaultInstance()
+//        db.executeTransactionAsync {
+//            it.copyToRealmOrUpdate(list)
+//        }
+//    }
 
-    override suspend fun getAllMaps(mapId: String): MutableList<MapTileNodes> {
-        val db = Realm.getDefaultInstance()
-        val list = db.where(MapTileNodes::class.java).equalTo("mapId", mapId)
-            .findAll() ?: ArrayList()
-        return list
-    }
+//    override suspend fun getAllMaps(mapId: String): MutableList<MapTileNodes> {
+//        val db = Realm.getDefaultInstance()
+//        val list = db.where(MapTileNodes::class.java).equalTo("mapId", mapId)
+//            .findAll() ?: ArrayList()
+//        return list
+//    }
 
 //    override suspend fun getAllMapsToBeDownload(mapId: String): MutableList<MapTileNodes> {
 //        val db = Realm.getDefaultInstance()
