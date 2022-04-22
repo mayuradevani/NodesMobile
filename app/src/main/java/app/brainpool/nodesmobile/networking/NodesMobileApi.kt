@@ -19,7 +19,7 @@ class NodesMobileApi {
             "Only in main thread can get the apolloClient instance"
         }
         return ApolloClient.builder()
-            .serverUrl(GlobalVar.DEV_URL)
+            .serverUrl(GlobalVar.QA_URL)
             .okHttpClient(
                 OkHttpClient.Builder()
                     .connectTimeout(5, TimeUnit.MINUTES) // connect timeout
